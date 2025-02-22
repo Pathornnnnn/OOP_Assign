@@ -36,9 +36,6 @@ class Account:
     def get_name(self):
         return self.__name
     
-    
-    
-
 class Customer(Account):
     def __init__(self, user_id, name, email):
         super().__init__(user_id, name, email)

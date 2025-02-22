@@ -54,9 +54,12 @@ class Admin(Account):
         super().__init__(user_id, name, email)
 
 class Product:
-    def __init__(self,product_id , name):
+    def __init__(self,product_id , name , description , price , stock):
         self.__id = product_id
         self.__name = name
+        self.__description = description
+        self.__price = price
+        self.__stock = stock
     
     def get_name_product(self):
         return self.__name
@@ -86,7 +89,9 @@ class Cartitem:
         return f'{self.__product} : {self.__quantity}'
     
 class Payment:
-    pass
+    def __init__(self,id_pay , amount):
+        self.__id = id_pay
+        self.__amount = amount
 
 class QRcode(Payment):
     pass
@@ -111,10 +116,23 @@ class Coupon:
         return self.__discount
 
 class Order:
-    pass
+    def __init__(self, Cart, Id, Date, Status, TotalAmount):
+        self.__id = Id
+        self.__list = Cart
+        self.__Date = Date
+        self.__Status = Status
+        self.__TotalAmount = TotalAmount
 
 class Review:
-    pass
+      def __init__(self, Id, product, rating , comment ):
+        self.__id = Id
+        self.__product = product
+        self.__rating = rating
+        self.__comment = comment
 
 class Shipment:
-    pass
+    def __init__(self, id_ship , tracking_number , type_ship , date_ship):
+        self.__id_ship = id_ship
+        self.__tracking = tracking_number
+        self.__type = type_ship
+        self.__date = date_ship

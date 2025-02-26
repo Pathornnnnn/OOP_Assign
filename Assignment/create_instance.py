@@ -19,7 +19,7 @@ def create_instance():
     product7 = Product("Apple iPad Mini 7 (2024) Wi-Fi 256GB 8.3 inch Blue", "฿21,900", "qwe", 5,"PIC\Apple iPad Mini 7 (2024) Wi-Fi 256GB 8.3 inch Blue.png")
     product8 = Product("สมาร์ทโฟน Samsung Galaxy S25 (12+512) Silver Shadow (5G)", "฿34,900", "qwe", 5,"PIC\สมาร์ทโฟน Samsung Galaxy S25 (12+512) Silver Shadow (5G).png")
     product9 = Product("Apple iPhone 16","฿28,700","qwe", 5,"PIC\9.png")
-    product10 = Product("Apple iPhone 16 Plus","฿34,400","qwe", 5,"PIC/Apple iPhone 16 Plus.png")
+    product10 = Product("Apple iPhone 16 Plus","฿34,400","qwe", 5,"PIC\Apple iPhone 16 Plus.png")
     product11 = Product("Apple iPad mini 7 (A17 Pro) Wi-Fi 8.3 inch","฿17,900","qwe", 5,"PIC/Apple iPad mini 7.png")
     product12 = Product("Apple iPad Air 5 Wi-Fi + Cellular 10.9 inch 2022","฿20,900","qwe", 5,"PIC/12.png")
     product13 = Product("Apple MacBook Pro 14 M4 chip","฿54,900","qwe", 5,"PIC/13.png")
@@ -66,7 +66,7 @@ def create_instance():
     # OrangeIT.add_cart('Keyboard',5,'1')
 
         
-    print('ID :',maxkey.get_acc_id(),'| Name :',  maxkey.get_name() ,'| Cart :', maxkey.get_cart_shopping())
-    print('ID :',jj.get_acc_id(),'| Name :',  jj.get_name() ,'| Cart :', jj.get_cart_shopping())
+    # print('ID :',maxkey.get_acc_id(),'| Name :',  maxkey.get_name() ,'| Cart :', maxkey.get_cart_shopping())
+    # print('ID :',jj.get_acc_id(),'| Name :',  jj.get_name() ,'| Cart :', jj.get_cart_shopping())
 
     return OrangeIT

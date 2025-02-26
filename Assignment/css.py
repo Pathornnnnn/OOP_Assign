@@ -393,3 +393,85 @@ login_css = '''
         '''
 
 
+product_css = '''
+                    """
+                        html, body {
+                            background-color: #ffffff !important;
+                            color: black;
+                        }
+                        .container, .product-container {
+                            background-color: #ffffff !important;
+                        }
+                        body {
+                            margin: 0;
+                            padding: 0;
+                            min-height: 100vh;
+                            display: flex;
+                            flex-direction: column;
+                        }
+                        .header-container {
+                            display: flex;
+                            justify-content: space-between;
+                            align-items: center;
+                            padding: 15px 20px;
+                            background-color: #ffffff;
+                            color: black;
+                            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                            position: relative;
+                        }
+                        .header-title {
+                            font-size: 28px;
+                            font-weight: bold;
+                            color: #f39c12;
+                        }
+                        .product-detail-container {
+                            display: flex;
+                            gap: 20px;
+                            max-width: 1000px;
+                            margin: auto;
+                            padding: 20px;
+                            background: #fff;
+                            border-radius: 10px;
+                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        }
+                        .product-image-container {
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            width: 360px;
+                            height: 360px;
+                        }
+                        .product-image img {
+                            width: 150px !important;
+                            height: 150px !important;
+                            object-fit: cover;
+                            display: block;
+                            border-radius: 10px;
+                        }
+                        .product-info {
+                            flex: 1;
+                            display: flex;
+                            flex-direction: column;
+                            gap: 10px;
+                        }
+                        .buy-btn {
+                            background-color: #f39c12;
+                            color: white;
+                            padding: 10px;
+                            border: none;
+                            border-radius: 5px;
+                            cursor: pointer;
+                            font-size: 18px;
+                        }
+                        .footer {
+                            background-color: #ffffff !important;
+                            color: black;
+                            text-align: center;
+                            padding: 15px 20px;
+                            font-size: 14px;
+                            border-top: 1px solid #ddd;
+                            margin-top: auto;
+                        }
+        """
+
+'''

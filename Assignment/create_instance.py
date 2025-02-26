@@ -2,8 +2,8 @@ from OrangeIT import *
 def create_instance():
     #init usr
 
-    maxkey = Customer('MAX','MAX@gmail.com')
-    jj = Customer('JJ','JJ@gmail.com')
+    maxkey = Customer('MAX','MAX@gmail.com','111',11)
+    jj = Customer('JJ','JJ@gmail.com','2222',32)
 
     user_lst = []
     user_lst.append(maxkey)
@@ -13,8 +13,8 @@ def create_instance():
     product1 = Product("Apple iPhone 13 128GB Midnight", "฿17,200", "qwe", 5, "PIC\Apple iPhone 13 128GB Midnight.png")
     product2 = Product("Apple iPhone 16e 128GB Black", "฿22,900", "qwe", 5, "PIC\Apple iPhone 16e 128GB Black.png")
     product3 = Product("Apple iPhone 16e 128GB White", "฿22,900", "qwe", 5, "PIC\Apple iPhone 16e 128GB White.png")
-    product4 = Product("ร่ม Jisulife FA52 Portal Umbrella Fan Pink","qwe", 5, "฿1,190", "PIC\ร่ม Jisulife FA52 Portal Umbrella Fan Pink.png")
-    product5 = Product("Apple iPhone 16 Pro Max 256GB Desert Titanium","qwe", 5, "฿46,400", "PIC\Apple iPhone 16 Pro Max 256GB Desert Titanium.png")
+    product4 = Product("ร่ม Jisulife FA52 Portal Umbrella Fan Pink", "฿1,190" ,"qwe", 5, "PIC\ร่ม Jisulife FA52 Portal Umbrella Fan Pink.png")
+    product5 = Product("Apple iPhone 16 Pro Max 256GB Desert Titanium", "฿46,400","qwe", 5, "PIC\Apple iPhone 16 Pro Max 256GB Desert Titanium.png")
     product6 = Product("Apple Watch Series 10 GPS 42mm Rose Gold Aluminium Case with Light Blush Sport Band - S/M", "฿13,300", "qwe", 5,"PIC\Apple Watch Series 10 GPS 42mm Rose Gold Aluminium Case with Light Blush Sport Band.png")
     product7 = Product("Apple iPad Mini 7 (2024) Wi-Fi 256GB 8.3 inch Blue", "฿21,900", "qwe", 5,"PIC\Apple iPad Mini 7 (2024) Wi-Fi 256GB 8.3 inch Blue.png")
     product8 = Product("สมาร์ทโฟน Samsung Galaxy S25 (12+512) Silver Shadow (5G)", "฿34,900", "qwe", 5,"PIC\สมาร์ทโฟน Samsung Galaxy S25 (12+512) Silver Shadow (5G).png")
@@ -61,12 +61,12 @@ def create_instance():
 
     # TEST API
     # เพิ่มสินค้า Monitor จำนวน 2 ชิ้น ลงตะกร้าของไอดี 1 (MAX)
-    # OrangeIT.add_cart('Monitor',2,'1')
-    # # เพิ่มสินค้า Monitor จำนวน 2 ชิ้น ลงตะกร้าของไอดี 1 (MAX)
-    # OrangeIT.add_cart('Keyboard',5,'1')
+    OrangeIT.add_to_cart(1,2,1)
+    OrangeIT.add_to_cart(5,2,1)
+    # เพิ่มสินค้า Monitor จำนวน 2 ชิ้น ลงตะกร้าของไอดี 1 (MAX)
 
-        
-    # print('ID :',maxkey.get_acc_id(),'| Name :',  maxkey.get_name() ,'| Cart :', maxkey.get_cart_shopping())
+    acc = OrangeIT.search_acc_by_id(1)
+    print('ID :',acc.get_id(),'| Name :',  acc.get_name() ,'| Cart :', acc.get_cart_shopping())
     # print('ID :',jj.get_acc_id(),'| Name :',  jj.get_name() ,'| Cart :', jj.get_cart_shopping())
 
     return OrangeIT

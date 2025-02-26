@@ -12,16 +12,57 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 
 #/login
-@rt('/login')
+   
+@rt("/login")
 def get():
-    pass
+    return Head(Div(Style(home_css), Div(
+
+            A(H1("OrAnGeIT", cls="header-title"),href='/'),  # โลโก้ใหญ่ขึ้น
+            cls="header-container",
+
+    )),
+        H2('Login', _class='login-title'),
+        Div(
+            Form(
+                Input(type='email', name='email', placeholder='อีเมล', required=True),
+                Input(type='password', name='password', placeholder='รหัสผ่าน', required=True),
+                Button('Login', type='submit', _class='signup-btn'),
+                action='/loginCheck', method='post', 
+                _class='login-form'
+            ),A(Button('Register', _class='register-btn'),href='/register'),
+            _class='signup-container'
+        ),
+        Style(login_css)
+
+        
+    )
 
 
 
 #/register
-@rt('/register')
+@rt("/register")
 def get():
-    pass
+    return Head(Div(Style(home_css), Div(
+
+            A(H1("OrAnGeIT", cls="header-title"),href='/'),  # โลโก้ใหญ่ขึ้น
+            cls="header-container",
+
+    )),
+        H2('Register', _class='register-title'),
+        Div(Style(register_css),
+            Form(
+                Input(Id='Fullname', type='text', name='Fullname', placeholder='Fullname', required=True),
+                Input(Id='email', type='email', name='email', placeholder='E-mail', required=True),
+                Input(Id='password', type='password', name='password', placeholder='password', required=True),
+                Input(Id='age', type='number', name='age', min='18', max='100',placeholder='Age'),
+                Button('Register', type='submit', _class='register-btn'),
+                action='/add', method='post',
+                _class='register-form'
+            ),
+            _class='register-container',style="align-items: center;"
+        ),
+        Style(register_css)
+    )
 
 
 
@@ -31,7 +72,7 @@ def get():
 def get():
     return  Style(home_css),Div(
         Div(
-            H1("OrAnGe", cls="header-title"),  # โลโก้ใหญ่ขึ้น
+            H1("OrAnGeIT", cls="header-title"),  # โลโก้ใหญ่ขึ้น
             Div(
                 Form(
                     Div(
@@ -44,13 +85,15 @@ def get():
                 ),
             ),
             Div(
-                Div(
+                A(Div(
                     Img(src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png", cls="icon"),
-                    Span("เข้าสู่ระบบ", cls="login-text"),
                     cls="login"
-                ),
-                Img(src="https://cdn-icons-png.flaticon.com/128/5392/5392794.png", cls="icon cart"),
-                cls="header-buttons"
+                ),href= '/login'),
+                A(
+                    Div(
+                    Img(src="https://cdn-icons-png.flaticon.com/128/5392/5392794.png", cls="icon cart"),
+                    cls="header-buttons"
+                , href='/register'))
             ),
             cls="header-container"
         ),
@@ -174,7 +217,7 @@ def get():
 def get():
     return  Body(
                 Div(
-                    A(H1("ORANGE Admin Add", cls="header-title"), cls="header-container"),hx_get='/'),
+                    A(H1("ORANGE Admin Add", cls="header-title"), cls="header-container", href = '/')),
                     Form(
                         Input(id="name", placeholder="ชื่อสินค้า"),
                         Input(id="price", placeholder="ราคาสินค้า"),

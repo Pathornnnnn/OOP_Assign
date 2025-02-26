@@ -282,3 +282,114 @@ add_css = '''
                         """
 
 '''
+
+
+register_css = '''
+                """
+                    head {
+                        background-color:rgb(255, 255, 255);
+                    }
+                    body {
+                        background-color:rgb(255, 255, 255);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        margin: 0;
+                        flex-direction: column;
+                    }
+                    .register-title {
+                        color: rgb(0, 0, 0);
+                        text-align: center;
+                        font-size: 50px;
+                        margin: 20px 0;
+                    }
+                    .register-container {
+                    background: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 0 10px rgb(187, 187, 187);
+                        width: 300px;
+                        text-align: center;
+                    }
+                    .register-btn {
+                        width: 100%;
+                        padding: 8px;
+                        background-color:rgb(255, 170, 0);
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
+                    .register-btn:hover {
+                        background-color:rgb(255, 132, 0);
+                    }
+                    .register-form input, .register-form select {
+                        color: rgb(0, 0, 0);
+                        background-color:rgb(239, 239, 239);
+                        width: 100%;
+                        padding: 10px;
+                        margin: 10px 0;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                    }
+                    """
+
+'''
+
+
+login_css = '''
+                    """
+                    head {
+                        background-color:rgb(255, 255, 255);
+                    }
+                    body {
+                        background-color:rgb(255, 255, 255);
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        height: 100vh;
+                        margin: 0;
+                        flex-direction: column;
+                    }
+                    .login-title {
+                        color: rgb(0, 0, 0);
+                        text-align: center;
+                        font-size: 50px;
+                        margin: 20px 0;
+                    }
+                    .signup-container {
+                        background: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 0 10px rgb(187, 187, 187);
+                        width: 300px;
+                        text-align: center;
+                    }
+                    .signup-btn {
+                        width: 100%;
+                        padding: 8px;
+                        background-color:rgb(255, 170, 0);
+                        color: white;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                    }
+                    .signup-btn:hover {
+                        background-color:rgb(255, 132, 0);
+                    }
+                    .login-form input {
+                        color: rgb(0, 0, 0);
+                        background-color:rgb(239, 239, 239);
+                        width: 100%;
+                        padding: 10px;
+                        margin: 10px 0;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                    }
+                    """
+
+
+        '''
+
+

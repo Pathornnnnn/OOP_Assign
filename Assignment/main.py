@@ -1,15 +1,14 @@
 from fasthtml.common import *
 from create_instance import *
+from css import *
+import os
 OrangeIT = create_instance()
-app , rt = fast_app()
+app, rt = fast_app()
 
+
+UPLOAD_DIR = "PIC"
+os.makedirs(UPLOAD_DIR, exist_ok=True)
 # PATH
-
-
-#/
-@rt('/')
-def get():
-    pass
 
 
 #/login
@@ -27,9 +26,64 @@ def get():
 
 
 #/home
+
 @rt('/')
 def get():
-    pass
+    return  Style(home_css),Div(
+        Div(
+            H1("OrAnGe", cls="header-title"),  # โลโก้ใหญ่ขึ้น
+            Div(
+                Form(
+                    Div(
+                        Input(id="name", placeholder="ค้นหาสินค้าที่ต้องการที่นี่...", 
+                              cls="search-input", hx_get="/search", 
+                              target_id="results", hx_trigger="keyup delay:500ms"),
+                        Button(cls="search-btn"),
+                        cls="search-container"
+                    )
+                ),
+            ),
+            Div(
+                Div(
+                    Img(src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png", cls="icon"),
+                    Span("เข้าสู่ระบบ", cls="login-text"),
+                    cls="login"
+                ),
+                Img(src="https://cdn-icons-png.flaticon.com/128/5392/5392794.png", cls="icon cart"),
+                cls="header-buttons"
+            ),
+            cls="header-container"
+        ),
+        Div(id="results", cls="product-container", *[
+            Div(
+                Img(src=product.get_img(), alt=product.get_name()),
+                H3(product.get_name()),
+                P(f"Price : {product.get_price()} THB"),
+                cls="product-card"
+            ) for product in OrangeIT.get_lst_product()
+        ]),Div(
+    Div(id="results", cls="product-container"),
+    Div(P("© 2025 OrAnGe Store | All Rights Reserved. | 67015105, 67015155, 67015167", cls="footer")),
+    cls="container"
+)
+    )
+
+
+
+@rt('/search')
+def get(name: str):
+    results = OrangeIT.search(name)
+    if results:
+        return Div(cls=("product-container"), *[Div(
+            Img(src=product.get_img(), alt=product.get_name()),
+            H3(product.get_name()),
+            P(f"Price : {product.get_price()} THB"),
+            cls=("product-card")
+        ) for product in results])
+    else:
+        return Div(P("Products Not Found."))
+
+serve()
 
 
 
@@ -113,3 +167,50 @@ def get():
 @rt('/my_order')
 def get():
     pass
+
+
+
+@rt('/add')
+def get():
+    return  Body(
+                Div(
+                    A(H1("ORANGE Admin Add", cls="header-title"), cls="header-container"),hx_get='/'),
+                    Form(
+                        Input(id="name", placeholder="ชื่อสินค้า"),
+                        Input(id="price", placeholder="ราคาสินค้า"),
+                        Input(id="description", placeholder="รายละเอียดสินค้า"),
+                        Input(id="quantity", placeholder="จำนวน"),
+                        Input(type="file", id="img", name="img"),
+                        Button("Add"),
+                        hx_post="/add_product",
+                        hx_target="#items",
+                        hx_swap="beforeend",
+                        enctype="multipart/form-data",
+                                ),
+                Div(id="items", cls="product-container", children=[
+                    Div(
+                        Img(src=p.get_img(), alt=p.get_name()),
+                        H3(p.get_name()),
+                        P(f"Price : {p.get_price()} THB"),
+                        cls="product-card"
+                    ) for p in OrangeIT.get_lst_product()
+                ]),
+                Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="footer"),Style(add_css)
+            )
+
+@rt('/add_product')
+def post(name: str, price: str, description:str ,quantity:str ,img: UploadFile):
+    file_path = os.path.join(UPLOAD_DIR, img.filename)
+    with open(file_path, "wb") as f:
+        f.write(img.file.read())
+    relative_path = f"{UPLOAD_DIR}/{img.filename}"
+
+    product = Product(name, price, description, description, relative_path)
+    OrangeIT.add_product(product)
+    
+    return Div(
+        Img(src=product.get_img(), alt=product.get_name()),
+        H3(product.get_name()),
+        P(f"Price : {product.get_price()} THB"),
+        cls="product-card"
+    )

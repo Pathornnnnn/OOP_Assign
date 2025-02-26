@@ -24,24 +24,40 @@ class Controller:
         itemm = Cartitem(product,quantity)
         acc.add_cart_shopping(itemm)
 
+    def get_lst_product(self):
+        return self.__product_lst
+    
+    def search(self, name):
+        result = []
+        for product in self.__lst_product:
+            if name.lower() in product.get_name().lower():
+                result.append(product)
+        return result
+    
+
 class Account:
-    def __init__(self,user_id , name , email):
-        self.__id = user_id
+    id_acc = 1
+    def __init__(self , name , email):
+        self.__id = self.id_acc
         self.__name = name
         self.__email = email
-    
+        self.id_acc +=1 
+
     def get_acc_id(self):
         return self.__id
 
     def get_name(self):
         return self.__name
     
+    def get_email(self):
+        return self.__email
+    
 class Customer(Account):
-    def __init__(self, user_id, name, email):
-        super().__init__(user_id, name, email)
+    def __init__(self, name, email):
+        super().__init__( name, email)
         self.__myCart = Cart([])
-        self.__myOrder = Order()
-        self.__myReview = Review()
+        # self.__myOrder = Order()
+        # self.__myReview = Review()
 
     def add_cart_shopping(self,cartitemm):
         self.__myCart.add_Cartitem(cartitemm)
@@ -50,20 +66,32 @@ class Customer(Account):
         return self.__myCart
 
 class Admin(Account):
-    def __init__(self, user_id, name, email):
-        super().__init__(user_id, name, email)
+    def __init__(self, name, email):
+        super().__init__( name, email)
 
 class Product:
-    def __init__(self,product_id , name , description , price , stock):
-        self.__id = product_id
+    def __init__(self, name, price, description, stock ,img):
         self.__name = name
-        self.__description = description
         self.__price = price
-        self.__stock = stock
+        self.__img = img
+        self.__description = description
+        self.__stock  = stock
     
-    def get_name_product(self):
+    def get_name(self):
         return self.__name
 
+    def get_price(self):
+        return self.__price
+
+    def get_img(self):
+        return self.__img
+
+    def get_description(self):
+        return self.__description
+    
+    def get_stock(self):
+        return self.__stock
+    
 class Cart:
     def __init__(self,Cartitem_lst=[]):
         self.__Cartitem_lst = Cartitem_lst

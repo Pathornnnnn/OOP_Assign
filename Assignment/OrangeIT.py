@@ -7,6 +7,12 @@ class Controller:
         for i in self.__acc_lst:
             if i.get_acc_id() == id:
                 return i
+            
+    def search_acc_by_email(self, email):
+        for acc in self.__acc_lst:
+            if acc.get_acc_email() == email:
+                return acc
+        return None
         
     def search_produch_by_name(self,name):
         for i in self.__product_lst:
@@ -34,13 +40,25 @@ class Controller:
                 result.append(product)
         return result
     
+    def check_login(self, email, password):
+        acc = self.search_acc_by_email(email)
+        if isinstance(acc,Account):
+            if acc.get_acc_email() == email and acc.get_password() == password:
+                return acc
+            else:
+                return None
+        return None  # ไม่ตรงกัน
+    
 
 class Account:
     id_acc = 1
-    def __init__(self , name , email):
+    def __init__(self,name, email , password , age):
         self.__id = self.id_acc
         self.__name = name
         self.__email = email
+        self.__password = password
+        self.__age = age
+        self.__myCart_shopping = Cart()
         self.id_acc +=1 
 
     def get_acc_id(self):
@@ -49,12 +67,15 @@ class Account:
     def get_name(self):
         return self.__name
     
-    def get_email(self):
+    def get_email_acc(self):
         return self.__email
     
+    def get_password_acc(self):
+        return self.__password
+    
 class Customer(Account):
-    def __init__(self, name, email):
-        super().__init__( name, email)
+    def __init__(self, name, email , password , age):
+        super().__init__( name, email , password , age)
         self.__myCart = Cart([])
         # self.__myOrder = Order()
         # self.__myReview = Review()
@@ -65,9 +86,15 @@ class Customer(Account):
     def get_cart_shopping(self): 
         return self.__myCart
 
+    def get_acc_email(self):
+        return self.get_email_acc()
+    
+    def get_password(self):
+        return self.get_password_acc()
+    
 class Admin(Account):
-    def __init__(self, name, email):
-        super().__init__( name, email)
+    def __init__(self, name, email , password , age):
+        super().__init__( name, email , password , age)
 
 class Product:
     def __init__(self, name, price, description, stock ,img):
@@ -79,6 +106,12 @@ class Product:
     
     def get_name(self):
         return self.__name
+
+    def get_acc_email(self):
+        return self.__email
+    
+    def get_password(self):
+        return self.__password
 
     def get_price(self):
         return self.__price

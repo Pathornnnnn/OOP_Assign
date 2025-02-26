@@ -10,7 +10,7 @@ UPLOAD_DIR = "PIC"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 # PATH
 
-
+account_now = None
 #/login
    
 @rt("/login")
@@ -37,6 +37,14 @@ def get():
         
     )
 
+@rt("/loginCheck")
+def post(email: str, password: str):
+    acc = OrangeIT.check_login(email, password)
+    if acc:
+        print(f"✅ Login Success: {acc}")
+        account_now = acc
+        return Redirect("/")  # กลับไปหน้าแรกถ้า Login สำเร็จ
+    return "❌ Login Failed! กรุณาตรวจสอบอีเมลหรือรหัสผ่าน", 401  # แจ้งเตือนถ้าข้อมูลผิด
 
 
 #/register

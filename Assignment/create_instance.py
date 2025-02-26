@@ -2,8 +2,8 @@ from OrangeIT import *
 def create_instance():
     #init usr
 
-    maxkey = Customer('MAX','MAX@gmail.com')
-    jj = Customer('JJ','JJ@gmail.com')
+    maxkey = Customer('MAX','MAX@gmail.com','111',11)
+    jj = Customer('JJ','JJ@gmail.com','2222',32)
 
     user_lst = []
     user_lst.append(maxkey)

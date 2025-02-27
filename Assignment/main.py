@@ -10,7 +10,7 @@ OrangeIT = create_instance()
 UPLOAD_DIR = "PIC"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 # PATH
-
+global account_now
 account_now = None
 #/login
    
@@ -40,6 +40,7 @@ def get():
 
 @rt("/loginCheck")
 def post(email: str, password: str):
+    global account_now
     acc = OrangeIT.check_login(email, password)
     if acc:
         print(f"✅ Login Success: {acc}")
@@ -163,9 +164,22 @@ def get(id: int):
                     H2(product.get_name()),
                     P(f"ราคา: {product.get_price()}"),
                     P(product.get_description()),
-                    Div(Button("ซื้อเลย", cls="buy-btn" ,style='margin-right:5px'),
+                    Input(type="number",name="quantity", value="1", min = "1" , max=f'{product.get_stock()}'),
+                    Div(
                         
-                        Button("เพิ่มลงตะกร้า", cls="buy-btn" ,style="background-color:gray;" ,action = f'/cart/{product.get_id()}',method = 'post'))
+                        Form(
+                            Button("ซื้อเลย", cls="buy-btn" ,style='margin-right:5px' , hx_post='/purchase')
+                            ),
+
+                        Form(
+                                Button("เพิ่มลงตะกร้า", cls="buy-btn" ,type="submit",style="background-color:gray;"),
+                                # ใช้ `hx-include` เพื่อให้ input ส่งค่าไปด้วย
+                                hx_post=f'/cart/{product.get_id()}',
+                                hx_include="[name='quantity']", 
+                                hx_target='Body',
+                            )
+                        
+                        )
                     ,
                     cls="product-info"
                 ),
@@ -177,14 +191,25 @@ def get(id: int):
     )
 
 #cart
-@rt('/cart/{product_id}')
-def post(product_id: int , quantity :int, acc_id : str):
-    if account_now == None and isinstance(account_now, Account):
+@rt('/cart/{product_id}')   
+def post(product_id: int , quantity: int=1):
+    global account_now
+    print(product_id,quantity,account_now)
+
+    try:
+        quantity = int(quantity)
+        if quantity <= 0:
+            return Div(P("❌ Invalid quantity!", cls="error"))
+    except ValueError:
+        return Div(P("❌ Invalid quantity format!", cls="error"))
+
+    if not account_now or not isinstance(account_now, Customer):
         return Div(P("account Not Found", cls="error"))
-    
-    OrangeIT.add_cart(product_id,1,acc_id)
-    acc = OrangeIT.search_acc_by_id(acc_id)
-    print('ID :',acc.get_id(),'| Name :',  acc.get_name() ,'| Cart :', acc.get_cart_shopping())
+    else:
+        account_id = account_now.get_id()
+        OrangeIT.add_to_cart(product_id,quantity,account_id)
+        print('ID :',account_now.get_id(),'| Name :',  account_now.get_name() ,'| Cart :', account_now.get_cart_shopping())
+        return Div(P("Add cart", cls="error"))
 
 
 

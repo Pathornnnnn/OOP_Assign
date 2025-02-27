@@ -35,8 +35,16 @@ class Controller:
         acc = self.search_acc_by_id(acc_id)
         stock_product = product.get_stock()
         if stock_product >= quantity:
+            for i in acc.get_cart_shopping().get_cart_lst():
+                if product.get_name() == i.get_product().get_name():
+                    i.add_quantity(quantity)
+                    product.down_stock(quantity)
+                    print('add to cart exist item')
+                    return True
             itemm = Cartitem(product,quantity)
             acc.Add_to_cart_shopping(itemm)
+            product.down_stock(quantity)
+            print('add to cart new item')
             return True
 
         else:
@@ -160,12 +168,18 @@ class Product:
     def get_stock(self):
         return self.__stock
     
+    def down_stock(self, quantity):
+        self.__stock -= quantity
+    
 class Cart:
     def __init__(self,Cartitem_lst=[]):
         self.__Cartitem_lst = Cartitem_lst
 
     def add_to_cartitem(self,inp):
         self.__Cartitem_lst.append(inp)
+
+    def get_cart_lst(self):
+        return self.__Cartitem_lst
 
     def __str__(self):
         return f'{[[i.get_product().get_name(), i.get__quantity() ] for i in self.__Cartitem_lst]}'
@@ -181,6 +195,10 @@ class Cartitem:
     def get__quantity(self):
         return self.__quantity
     
+    def add_quantity(self, quantity):
+        self.__quantity += quantity
+    
+
     def __str__(self):
         return f'{self.__product} : {self.__quantity}'
     

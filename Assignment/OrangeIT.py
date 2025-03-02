@@ -24,6 +24,7 @@ class Controller:
         for i in self.__product_lst:
             if name == i.get_name():
                 return i
+            
     def get_acc_lst(self):
         return self.__acc_lst
     
@@ -70,6 +71,56 @@ class Controller:
                 return None
         return None  # ไม่ตรงกัน
     
+    def update_cart_quantity(self , account , cartitem_id , quantity):
+        acc = self.search_acc_by_id(account)
+        cart = acc.get_cart_shopping()
+        cartitems = acc.get_cart_shopping().get_cart_lst()
+        for i in cartitems:
+            if i.get_id() == cartitem_id:
+                stock = i.get_product().get_stock()
+                if i.get_quantity() + quantity <= stock and i.get_quantity() + quantity > 0:
+                    i.update_quantity(quantity)
+                    print('Update Pass')
+                    return True
+                else:
+                    print('Can"t Update stock not enough')
+                    return False
+        return False
+
+    def remove_cartitem_by_id(self , account , cartitem_id):
+        acc = self.search_acc_by_id(account)
+        cart = acc.get_cart_shopping()
+        cart.remove_cartitem(cartitem_id)
+        print('Remove Success')
+
+    def creat_order_acc(self, account , name , addr , city , post , phone):
+        acc = self.search_acc_by_id(account)
+        cart = acc.get_cart_shopping()
+        cart_lst = acc.get_cart_shopping().get_cart_lst()
+        address = Address(name, addr, city , post, phone)
+        my_order = Order(cart_lst , address , 'Wait For payment' , cart.get_price_total())
+        acc.add_myorder(my_order)
+        print('add myorder')
+        return my_order.get_id()
+    
+    def change_status_order(self, account , order_id , message):
+        acc = self.search_acc_by_id(account)
+        order_lst = acc.get_myorder_lst()
+        for i in order_lst:
+            if i.get_id() == order_id:
+                i.update_status(message)
+                print('Update status success')
+                return True
+            
+        print('can not update')
+        return False
+    
+    def clear_cart_account_by_id(self,account ):
+        acc = self.search_acc_by_id(account)
+        cart = acc.get_cart_shopping()
+        cart.clear_cart()
+        return True
+    
 class Account:
     id_acc = 1
     def __init__(self,name, email , password , age):
@@ -106,7 +157,7 @@ class Customer(Account):
     def __init__(self, name, email , password , age):
         super().__init__( name, email , password , age)
         self.__myCart_shopping = Cart([])
-        # self.__myOrder = Order()
+        self.__myOrder = []
         # self.__myReview = Review()
 
     def get_cart_shopping(self): 
@@ -126,6 +177,13 @@ class Customer(Account):
     
     def get_cart_shopping(self):
         return self.__myCart_shopping
+    
+    def get_myorder_lst(self):
+        return self.__myOrder
+    
+    def add_myorder(self,order):
+        self.__myOrder.append(order)
+        return True
     
     def Add_to_cart_shopping(self,cartitem):
         self.__myCart_shopping.add_to_cartitem(cartitem)
@@ -188,14 +246,34 @@ class Cart:
             total += i.get_product().get_price() * i.get_quantity()
         return total
     
+    def search_cartitem_by_id(self, cartitem_id):
+        for i in self.__Cartitem_lst:
+            if i.get_id() == cartitem_id:
+                return i
+
+    def remove_cartitem(self, cartitem_id):
+        obj = self.search_cartitem_by_id(cartitem_id)
+        self.__Cartitem_lst.remove(obj)
+        return True
+    
+    def clear_cart(self):
+        self.__Cartitem_lst = []
+        print('clear cart success')
+    
     def __str__(self):
         return f'{[[i.get_product().get_name(), i.get_quantity() ] for i in self.__Cartitem_lst]}'
 
 class Cartitem:
+    id_cartitem = 1
     def __init__(self, product , quantity):
+        self.__id_cartitem = Cartitem.id_cartitem
         self.__product = product
         self.__quantity = quantity
+        Cartitem.id_cartitem += 1
 
+    def get_id(self):
+        return self.__id_cartitem
+    
     def get_product(self):
         return self.__product
     
@@ -207,6 +285,13 @@ class Cartitem:
     
     def __str__(self):
         return f'{self.__product} : {self.__quantity}'
+    
+    def get_price_product(self):
+        return self.get_product().get_price()
+    
+    def update_quantity(self, n_quan):
+        self.__quantity += n_quan
+        print('Update success')
     
 class Payment:
     def __init__(self,id_pay , amount):
@@ -236,12 +321,24 @@ class Coupon:
         return self.__discount
 
 class Order:
-    def __init__(self, Cart, Id, Date, Status, TotalAmount):
-        self.__id = Id
-        self.__list = Cart
-        self.__Date = Date
+    order_id = 1
+    def __init__(self, Cartitem_lst, Address, Status, TotalAmount):
+        self.__id = Order.order_id
+        self.__list = Cartitem_lst
+        self.__address = Address
         self.__Status = Status
         self.__TotalAmount = TotalAmount
+        Order.order_id += 1
+    
+    def get_id(self):
+        return self.__id
+    
+    def update_status(self, massage):
+        self.__Status = massage
+        return True
+    
+    def __str__(self):
+        return f'{self.__id}  {self.__list} {self.__address} {self.__Status} {self.__TotalAmount} '
 
 class Review:
       def __init__(self, Id, product, rating , comment ):

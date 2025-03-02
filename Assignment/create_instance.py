@@ -67,7 +67,7 @@ def create_instance():
 
     acc = OrangeIT.search_acc_by_id(1)
     
-    print('ID :',acc.get_id(),'| Name :',  acc.get_name() ,'| Cart :', acc.get_cart_shopping())
+    print('ID :',acc.get_acc_id(),'| Name :',  acc.get_name() ,'| Cart :', acc.get_cart_shopping())
     # print('ID :',jj.get_acc_id(),'| Name :',  jj.get_name() ,'| Cart :', jj.get_cart_shopping())
 
     return OrangeIT

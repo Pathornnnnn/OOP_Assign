@@ -13,7 +13,7 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 global account_now
 global tem_address
 account_now = None #<----- ที่จริงต้องเก็บเป็น string
-
+order_id = None
 #/login
 @rt("/login")
 def get():
@@ -163,7 +163,7 @@ def get():
                                     P(f'{acc_name} , Click to logout',cls="login"),
                                     Img(src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png", cls="icon"),
                                     cls="login"
-                                )   ,href= '/logout'
+                                )   ,href= '/logout' 
                             )
                         ),
                     Grid(
@@ -276,17 +276,18 @@ def post(product_id: int , quantity: int=1):
         temp_acc = OrangeIT.search_acc_by_id(account_now)
         print('ID :',temp_acc.get_id(),'| Name :',  temp_acc.get_name() ,'| Cart :', temp_acc.get_cart_shopping())
 
-        return Div(P("Add cart", cls="error"))
+        return Redirect("/")
 #iei
 #view_cart
 @rt('/view_cart')
 def get():
-    if not account_now or not isinstance(account_now, Customer):
-        return Div(P("Account Not Found", cls="error"))
+    if not account_now:
+        return Div(P("account Not Found", cls="error"))
     
-    cart_items = account_now.get_cart_shopping().get_cart_lst()
-    total_price = sum(item.get_product().get_price() * item.get_quantity() for item in cart_items)
-
+    temp_acc = OrangeIT.search_acc_by_id(account_now)
+    cart = temp_acc.get_cart_shopping()
+    total_price = cart.get_price_total()
+    cart_items = cart.get_cart_lst()
     return Div(
         H1(f'🛒 ตะกร้าสินค้า ({sum(item.get_quantity() for item in cart_items)})', cls='cart-header'),
         Table(
@@ -296,14 +297,14 @@ def get():
                     Td(item.get_product().get_name()),
                     Td(
                         Div(
-                            Button("-", cls="qty-btn", hx_post=f"/update_cart/{item.get_product().get_id()}/decrease", hx_target="#cart"),
-                            Span(item["quantity"], cls="qty-span"),
-                            Button("+", cls="qty-btn", hx_post=f"/update_cart/{item.get_product().get_id()}/increase", hx_target="#cart"),
+                            Button("-", cls="qty-btn", hx_post=f"/update_cart/{item.get_id()}/decrease", hx_target="#cart"),
+                            Span(item.get_quantity(), cls="qty-span"),
+                            Button("+", cls="qty-btn", hx_post=f"/update_cart/{item.get_id()}/increase", hx_target="#cart"),
                             cls="qty-container"
                         )
                     ),
-                    Td(f"฿{item['price'] * item['quantity']}"),
-                    Td(Button("❌", cls="delete-btn", hx_post=f"/remove_cart/{item['id']}", hx_target="#cart"))
+                    Td(f"฿{item.get_price_product() * item.get_quantity()}"),
+                    Td(Button("❌", cls="delete-btn", hx_post=f"/remove_cart/{item.get_id()}", hx_target="#cart"))
                 )
                 for item in cart_items
             ],
@@ -317,32 +318,35 @@ def get():
 
 @rt('/update_cart/{product_id}/{action}')
 def post(product_id: int, action: str):
-    if not account_now or not isinstance(account_now, Customer):
-        return Div(P("Account Not Found", cls="error"))
+    if not account_now:
+        return Div(P("account Not Found", cls="error"))
     
     if action == "increase":
-        OrangeIT.update_cart_quantity(account_now.get_id(), product_id, 1)
+        OrangeIT.update_cart_quantity(account_now, product_id, 1)
     elif action == "decrease":
-        OrangeIT.update_cart_quantity(account_now.get_id(), product_id, -1)
+        OrangeIT.update_cart_quantity(account_now, product_id, -1)
 
-    return get()  
+    return Redirect('/view_cart')
 
 @rt('/remove_cart/{product_id}')
 def post(product_id: int):
-    if not account_now or not isinstance(account_now, Customer):
-        return Div(P("Account Not Found", cls="error"))
+    if not account_now:
+        return Div(P("account Not Found", cls="error"))
     
-    OrangeIT.remove_from_cart(account_now.get_id(), product_id)
-    return get()  
+    OrangeIT.remove_cartitem_by_id(account_now, product_id)
+
+    return Redirect('/view_cart')
 
 #checkout
 @rt('/checkout')
 def checkout():
-    if not account_now or not isinstance(account_now, Customer):
+    print(account_now)
+    if not account_now:
         return Div(P("account Not Found", cls="error"))
     
-    cartitems_lst = account_now.get_cart_shopping().get_cart_lst()
-    total_price = account_now.get_cart_shopping().get_price_total()
+    temp_acc = OrangeIT.search_acc_by_id(account_now)
+    cartitems_lst = temp_acc.get_cart_shopping().get_cart_lst()
+    total_price = temp_acc.get_cart_shopping().get_price_total()
     
     return Style(checkout_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
@@ -360,57 +364,71 @@ def checkout():
                 H3("Shipping Address"),
                 Div(
                     Label("Full Name"),
-                    Input(type="text", name="full_name", required=True, placeholder="Enter your full name", cls="input-field")
+                    Input(type="text", id="full_name", required=True, placeholder="Enter your full name", cls="input-field")
                 ),
                 Div(
                     Label("Address"),
-                    Input(type="text", name="address", required=True, placeholder="Enter your address", cls="input-field")
+                    Input(type="text", id="address", required=True, placeholder="Enter your address", cls="input-field")
                 ),
                 Div(
                     Label("City"),
-                    Input(type="text", name="city", required=True, placeholder="Enter your city", cls="input-field")
+                    Input(type="text", id="city", required=True, placeholder="Enter your city", cls="input-field")
                 ),
                 Div(
                     Label("Postal Code"),
-                    Input(type="text", name="postal_code", required=True, placeholder="Enter postal code", cls="input-field")
+                    Input(type="text", id="postal_code", required=True, placeholder="Enter postal code", cls="input-field")
                 ),
                 Div(
                     Label("Phone Number"),
-                    Input(type="tel", name="phone", required=True, placeholder="Enter phone number", cls="input-field")
+                    Input(type="tel", id="phone", required=True, placeholder="Enter phone number", cls="input-field")
                 ),
                 
-                Button("Proceed to Payment", cls="checkout-btn", hx_get='/payment', hx_target='body'),
+                Button("Proceed to Payment", cls="checkout-btn", hx_post='/payment', hx_target='body'),
                 cls="checkout-container"
             ),
         ),
         Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="container")
     )
 
+
+    
+
 #payment    
 @rt('/payment')
-def payment():
+def post(full_name:str , address: str , city : str , postal_code: str , phone: str):
+    global order_id
+    if not account_now:
+        return Div(P("account Not Found", cls="error"))
+    acc = OrangeIT.search_acc_by_id(account_now)
+    for i in acc.get_myorder_lst():
+        print(i)
+    order_id = OrangeIT.creat_order_acc(account_now, full_name, address, city, postal_code ,phone)
+    for i in acc.get_myorder_lst():
+        print(i)
     return Style(payment_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
         Div(
-            H2("💳 Payment"),
-            Form(
-                P("Card Number:"),
-                Input(type="text", name="card_number", placeholder="xxxx-xxxx-xxxx-xxxx"),
-                P("Expiry Date:"),
-                Input(type="text", name="expiry_date", placeholder="MM/YY"),
-                P("CVV:"),
-                Input(type="text", name="cvv", placeholder="123"),
-                Button("Pay Now", cls="pay-btn", hx_post='/confirm-payment', hx_target='body')
+            H2("📷 Scan to Pay"),
+            Div(
+                Img(src='/PIC/QR.jpg', alt='QR Code for Payment', cls='qr-code', style="width:250px; height:250px; display:block; margin:0 auto;"),
+                P("Scan the QR code above to complete your payment.", style="text-align:center; color:#666;"),
+                Button('Click to Confirm payment', hx_get = '/confirm-payment') ,
+                cls="qr-container"
             ),
             cls="payment-container"
         ),
         Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="container")
     )
 
-#my_order
-@rt('/my_order')
+@rt('/confirm-payment')
 def get():
-    pass
+    OrangeIT.change_status_order(account_now, order_id , "Wait Verify")
+    acc = OrangeIT.search_acc_by_id(account_now)
+    for i in acc.get_myorder_lst():
+        print(i)
+    print(f'update status order {order_id} to wait admin')
+    OrangeIT.clear_cart_account_by_id(account_now)
+    return Redirect('/')
 
 @rt('/add')
 def get():

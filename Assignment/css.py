@@ -652,83 +652,60 @@ payment_css = '''
 '''
 
 payment_css = '''
-                """
-                    body {
-                        background-color: #ffffff;
-                        color: black;
-                        margin: 0;
-                        padding: 0;
-                        min-height: 100vh;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                    }
-                    
-                    .container {
-                        width: 100%;
-                        max-width: 800px;
-                        background: white;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        text-align: center;
-                        margin-top: 50px;
-                    }
+body {
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+}
 
-                    .payment-title {
-                        font-size: 24px;
-                        font-weight: bold;
-                        color: #f39c12;
-                        margin-bottom: 20px;
-                    }
+.container {
+    width: 100%;
+    max-width: 600px;
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 20px;
+}
 
-                    .payment-form {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 15px;
-                    }
+.header-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #ff7f50;
+    text-decoration: none;
+}
 
-                    .payment-form label {
-                        font-size: 16px;
-                        font-weight: bold;
-                        text-align: left;
-                    }
+.payment-container {
+    padding: 20px;
+}
 
-                    .payment-form input, .payment-form select {
-                        width: 100%;
-                        padding: 10px;
-                        font-size: 16px;
-                        border: 1px solid #ddd;
-                        border-radius: 5px;
-                        box-sizing: border-box;
-                    }
+.qr-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-                    .payment-btn {
-                        background-color: #f39c12;
-                        color: white;
-                        padding: 12px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-size: 18px;
-                        transition: background 0.3s ease-in-out;
-                    }
+.qr-code {
+    border-radius: 10px;
+    padding: 10px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-                    .payment-btn:hover {
-                        background-color: #e67e22;
-                    }
-
-                    .footer {
-                        background-color: #ffffff;
-                        color: black;
-                        text-align: center;
-                        padding: 15px 20px;
-                        font-size: 14px;
-                        border-top: 1px solid #ddd;
-                        margin-top: auto;
-                    }
-                    """
-                '''
+.footer {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #888;
+}
+'''
 
 view_cart_css = '''
                     """
@@ -807,5 +784,29 @@ view_cart_css = '''
                     }
 
                     """
+
+'''
+
+
+popup_css = '''
+                """
+                    .popup {
+                        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                        background: rgba(0, 0, 0, 0.5); display: flex;
+                        align-items: center; justify-content: center; z-index: 1000;
+                    }
+                    .popup-content {
+                        background: white; padding: 20px; border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+                        min-width: 300px; text-align: center;
+                    }
+                    .popup button {
+                        margin-top: 10px; padding: 5px 10px; border: none; background: #ff5b5b;
+                        color: white; border-radius: 5px; cursor: pointer;
+                    }
+                    .popup button:hover {
+                        background: #ff2b2b;
+                    }
+                """
 
 '''

@@ -277,7 +277,7 @@ def post(product_id: int , quantity: int=1):
         print('ID :',temp_acc.get_id(),'| Name :',  temp_acc.get_name() ,'| Cart :', temp_acc.get_cart_shopping())
 
         return Div(P("Add cart", cls="error"))
-
+#iei
 #view_cart
 @rt('/view_cart')
 def get():

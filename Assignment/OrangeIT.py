@@ -121,6 +121,13 @@ class Controller:
         cart.clear_cart()
         return True
     
+    def search_order_by_id(self, account , order_id):
+        acc = self.search_acc_by_id(account)
+        myorder = acc.get_myorder_lst()
+        for i in myorder:
+            if i.get_id() == order_id:
+                return i
+    
 class Account:
     id_acc = 1
     def __init__(self,name, email , password , age):
@@ -333,6 +340,17 @@ class Order:
     def get_id(self):
         return self.__id
     
+    def get_list(self):
+        return self.__list
+    
+    def get_address(self):
+        return self.__address
+    
+    def get_Status(self):
+        return self.__Status
+    
+    def get_TotalAmount(self):
+        return self.__TotalAmount
     def update_status(self, massage):
         self.__Status = massage
         return True

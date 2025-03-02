@@ -810,3 +810,57 @@ popup_css = '''
                 """
 
 '''
+
+view_order = '''
+                .orders-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+}
+
+.order-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.order-id {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.order-status {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.order-address {
+    color: #666;
+}
+
+.order-total {
+    color: #28a745;
+    font-weight: bold;
+}
+
+.btn-view {
+    background: #007bff;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn-view:hover {
+    background: #0056b3;
+}
+
+'''

@@ -158,13 +158,11 @@ def get():
                 ),
                 Div(
                     Grid(
-                        A  (
                             Div(
-                                    P(f'{acc_name} , Click to logout',cls="login"),
-                                    Img(src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png", cls="icon"),
+                                    A(P(f'{acc_name} , Click to logout',cls="login"), hx_get='/logout'),
+                                    A(Img(src="https://cdn-icons-png.flaticon.com/128/1077/1077063.png", cls="icon"), href='/view_myorder'),
                                     cls="login"
-                                )   ,href= '/logout' 
-                            )
+                                )
                         ),
                     Grid(
                         A   (  
@@ -347,7 +345,6 @@ def checkout():
     temp_acc = OrangeIT.search_acc_by_id(account_now)
     cartitems_lst = temp_acc.get_cart_shopping().get_cart_lst()
     total_price = temp_acc.get_cart_shopping().get_price_total()
-    
     return Style(checkout_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
         Div(
@@ -405,6 +402,7 @@ def post(full_name:str , address: str , city : str , postal_code: str , phone: s
     order_id = OrangeIT.creat_order_acc(account_now, full_name, address, city, postal_code ,phone)
     for i in acc.get_myorder_lst():
         print(i)
+    OrangeIT.clear_cart_account_by_id(account_now)
     return Style(payment_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
         Div(
@@ -474,5 +472,67 @@ def post(name: str, price: str, description:str ,quantity:str ,img: UploadFile):
         P(f"Price : {product.get_price()} THB"),
         cls="product-card"
     )
+@rt('/view_myorder')
+def get():
+    global account_now
+    if not account_now:
+        return Div(P("Account Not Found", cls="error"))
+    
+    acc = OrangeIT.search_acc_by_id(account_now)
+    orders = acc.get_myorder_lst()
+    
+    
+    return  Body(
+            Div(
+                H1(f'📦 คำสั่งซื้อของฉัน ({len(orders)})', cls='order-header'),
+                Table(
+                    Tr(Th("Order ID"), Th("สินค้า"), Th("สถานะ"), Th("ที่อยู่"), Th("ยอดรวม"), Th("รายละเอียด")),
+                    *[
+                        Tr(
+                            Td(order.get_id()),
+                            Td(
+                                Ul(
+                                    *[Li(item.get_product().get_name()) for item in order.get_list()]
+                                ),
+                                cls="order-items"
+                            ),
+                            Td(order.get_Status(), cls="order-status"),
+                            Td(order.get_address(), cls="order-address"),
+                            Td(f"฿{order.get_TotalAmount()}", cls="order-total"),
+                            Td(Button("🔍", cls="view-btn", hx_post=f"/order_details/{order.get_id()}", hx_target="#order-details-container", hx_swap="innerHTML"))
+                        )
+                        for order in orders
+                    ],
+                    cls="order-table"
+                ),
+                Div(id="order-details-container", cls="order-details-container"),Style(view_cart_css),
+                id="orders"
+            ),Style(view_order)
+        )
+
+@rt('/order_details/{order_id}')
+def post(order_id: int):
+    global account_now
+    if not account_now:
+        return Div(P("Account Not Found", cls="error"))
+    order = OrangeIT.search_order_by_id(account_now , order_id)
+    if not order:
+        return Div(P("Order not found", cls="error"))
+    
+    return Div(
+        H2(f"รายละเอียดคำสั่งซื้อ #{order.get_id()}", cls="order-detail-header"),
+        P(f"สถานะ: {order.get_Status()}", cls="order-status"),
+        P(f"ที่อยู่จัดส่ง: {order.get_address()}", cls="order-address"),
+        P(f"ยอดรวม: ฿{order.get_TotalAmount()}", cls="order-total"),
+        H3("รายการสินค้า", cls="order-items-header"),
+        Ul(
+            *[Li(f"{item.get_product().get_name()} - {item.get_quantity()} ชิ้น (฿{item.get_price_product() * item.get_quantity()})") for item in order.get_list()]
+        ),
+        Button("ปิด", cls="close-btn", hx_on="click: this.closest('.order-details-container').innerHTML = ''")
+    ),Style(view_order)
+
+@rt('/verify')
+def get():
+    pass
 
 serve()

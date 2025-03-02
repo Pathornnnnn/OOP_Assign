@@ -1,4 +1,16 @@
 home_css =''' """
+                .login p, .cart p {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: black;
+                    margin: 0;
+                    padding-left: 5px; /* เพิ่มระยะห่างระหว่างไอคอนกับข้อความ */
+                    transition: color 0.3s ease-in-out;
+                }
+
+                .login:hover p, .cart:hover p {
+                    color: #f39c12; /* เปลี่ยนสีเป็นส้มเมื่อ hover */
+                }
                 html, body {
                     background-color: #ffffff !important; /* บังคับให้เป็นสีขาว */
                     color: black; /* ทำให้ข้อความมองเห็นได้ชัดเจน */
@@ -165,6 +177,7 @@ home_css =''' """
                     border-top: 1px solid #ddd;
                     margin-top: auto; /* ดัน footer ไปอยู่ล่าง */
                 }
+                
 
                             """ 
             '''
@@ -473,5 +486,326 @@ product_css = '''
                             margin-top: auto;
                         }
         """
+
+'''
+
+checkout_css = '''
+                    """
+                    head {
+                        background-color: #ffffff;
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                        background-color: #ffffff;
+                        margin: 0;
+                        padding: 0;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                    }
+                    .container {
+                        width: 50%;
+                        padding: 20px;
+                        background: white;
+                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                        margin-top: 50px;
+                        border-radius: 10px;
+                    }
+                    h2 {
+                        color: #f39c12;
+                        text-align: center;
+                    }
+                    .order-summary {
+                        padding: 10px;
+                        border-bottom: 1px solid #ddd;
+                    }
+                    .total {
+                        font-weight: bold;
+                        font-size: 18px;
+                    }
+                    .checkout-btn {
+                        background: #f39c12;
+                        color: white;
+                        padding: 10px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                        margin-top: 20px;
+                        font-size: 16px;
+                    }
+                    .checkout-btn:hover {
+                        background: #e67e22;
+                    }
+                    
+                    /* ปรับแต่งฟอร์มที่อยู่ */
+                    .checkout-container label {
+                        font-weight: bold;
+                        display: block;
+                        margin-top: 10px;
+                        color: #555;
+                    }
+
+                    .input-field {
+                        width: 100%;
+                        padding: 10px;
+                        margin: 5px 0;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        font-size: 16px;
+                        background-color: #f8f9fa;
+                        color: #333;
+                    }
+
+                    .input-field::placeholder {
+                        color: #888;
+                    }
+                    """
+'''
+
+payment_css = '''
+                """
+                    body {
+                        background-color: #ffffff;
+                        color: black;
+                        margin: 0;
+                        padding: 0;
+                        min-height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                    }
+                    
+                    .container {
+                        width: 100%;
+                        max-width: 800px;
+                        background: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        text-align: center;
+                        margin-top: 50px;
+                    }
+
+                    .payment-title {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: #f39c12;
+                        margin-bottom: 20px;
+                    }
+
+                    .payment-form {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                    }
+
+                    .payment-form label {
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-align: left;
+                        color: #555;
+                    }
+
+                    .payment-form input, .payment-form select {
+                        width: 100%;
+                        padding: 10px;
+                        font-size: 16px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        box-sizing: border-box;
+                        background-color: #f8f9fa;
+                        color: #333;
+                    }
+
+                    .payment-form input::placeholder {
+                        color: #888;
+                    }
+
+                    .payment-btn {
+                        background-color: #f39c12;
+                        color: white;
+                        padding: 12px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 18px;
+                        transition: background 0.3s ease-in-out;
+                    }
+
+                    .payment-btn:hover {
+                        background-color: #e67e22;
+                    }
+
+                    .footer {
+                        background-color: #ffffff;
+                        color: black;
+                        text-align: center;
+                        padding: 15px 20px;
+                        font-size: 14px;
+                        border-top: 1px solid #ddd;
+                        margin-top: auto;
+                    }
+                    """
+'''
+
+payment_css = '''
+                """
+                    body {
+                        background-color: #ffffff;
+                        color: black;
+                        margin: 0;
+                        padding: 0;
+                        min-height: 100vh;
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                    }
+                    
+                    .container {
+                        width: 100%;
+                        max-width: 800px;
+                        background: white;
+                        padding: 20px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                        text-align: center;
+                        margin-top: 50px;
+                    }
+
+                    .payment-title {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: #f39c12;
+                        margin-bottom: 20px;
+                    }
+
+                    .payment-form {
+                        display: flex;
+                        flex-direction: column;
+                        gap: 15px;
+                    }
+
+                    .payment-form label {
+                        font-size: 16px;
+                        font-weight: bold;
+                        text-align: left;
+                    }
+
+                    .payment-form input, .payment-form select {
+                        width: 100%;
+                        padding: 10px;
+                        font-size: 16px;
+                        border: 1px solid #ddd;
+                        border-radius: 5px;
+                        box-sizing: border-box;
+                    }
+
+                    .payment-btn {
+                        background-color: #f39c12;
+                        color: white;
+                        padding: 12px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        font-size: 18px;
+                        transition: background 0.3s ease-in-out;
+                    }
+
+                    .payment-btn:hover {
+                        background-color: #e67e22;
+                    }
+
+                    .footer {
+                        background-color: #ffffff;
+                        color: black;
+                        text-align: center;
+                        padding: 15px 20px;
+                        font-size: 14px;
+                        border-top: 1px solid #ddd;
+                        margin-top: auto;
+                    }
+                    """
+                '''
+
+view_cart_css = '''
+                    """
+                    .cart-header {
+                        text-align: center;
+                        font-size: 24px;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                    }
+
+                    .cart-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 20px;
+                    }
+
+                    .cart-table th, .cart-table td {
+                        border: 1px solid #ddd;
+                        padding: 10px;
+                        text-align: center;
+                    }
+
+                    .cart-table th {
+                        background-color: #f4a261;
+                        color: white;
+                    }
+
+                    .qty-form {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                    }
+
+                    .qty-btn {
+                        background-color: #f4a261;
+                        color: white;
+                        border: none;
+                        padding: 5px 10px;
+                        cursor: pointer;
+                        font-size: 16px;
+                        margin: 0 5px;
+                    }
+
+                    .qty-btn:hover {
+                        background-color: #e76f51;
+                    }
+
+                    .qty-span {
+                        font-size: 18px;
+                        font-weight: bold;
+                        margin: 0 10px;
+                    }
+
+                    .total-price {
+                        font-size: 20px;
+                        font-weight: bold;
+                        text-align: right;
+                        margin-top: 20px;
+                    }
+
+                    .checkout-btn {
+                        display: block;
+                        width: 100%;
+                        padding: 10px;
+                        background-color: #2a9d8f;
+                        color: white;
+                        text-align: center;
+                        font-size: 18px;
+                        border: none;
+                        cursor: pointer;
+                        margin-top: 20px;
+                    }
+
+                    .checkout-btn:hover {
+                        background-color: #21867a;
+                    }
+
+                    """
 
 '''

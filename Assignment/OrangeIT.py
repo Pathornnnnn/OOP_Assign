@@ -32,8 +32,9 @@ class Controller:
 
     def add_to_cart(self, product_id , quantity, acc_id):
         product = self.search_product_by_id(product_id)
-        acc = self.search_acc_by_id(acc_id)
         stock_product = product.get_stock()
+        acc = self.search_acc_by_id(acc_id)
+        print(product,stock_product,acc)
         if stock_product >= quantity:
             for i in acc.get_cart_shopping().get_cart_lst():
                 if product.get_name() == i.get_product().get_name():
@@ -181,8 +182,14 @@ class Cart:
     def get_cart_lst(self):
         return self.__Cartitem_lst
 
+    def get_price_total(self):
+        total = 0
+        for i in self.__Cartitem_lst:
+            total += i.get_product().get_price() * i.get_quantity()
+        return total
+    
     def __str__(self):
-        return f'{[[i.get_product().get_name(), i.get__quantity() ] for i in self.__Cartitem_lst]}'
+        return f'{[[i.get_product().get_name(), i.get_quantity() ] for i in self.__Cartitem_lst]}'
 
 class Cartitem:
     def __init__(self, product , quantity):
@@ -192,13 +199,12 @@ class Cartitem:
     def get_product(self):
         return self.__product
     
-    def get__quantity(self):
+    def get_quantity(self):
         return self.__quantity
     
     def add_quantity(self, quantity):
         self.__quantity += quantity
     
-
     def __str__(self):
         return f'{self.__product} : {self.__quantity}'
     
@@ -250,3 +256,11 @@ class Shipment:
         self.__tracking = tracking_number
         self.__type = type_ship
         self.__date = date_ship
+
+class Address:
+    def __init__(self, name ,addr , city, post_code, phone):
+        self.__name = name
+        self.__addr = addr
+        self.__city = city
+        self.__post_code = post_code
+        self.__phone_number = phone

@@ -1,8 +1,9 @@
 class Controller:
-    def __init__(self, acc_lst, product_lst , admin_lst):
+    def __init__(self, acc_lst, product_lst , admin_lst , coupon_lst=[]):
         self.__acc_lst = acc_lst
         self.__product_lst = product_lst
         self.__admin_lst = admin_lst
+        self.__coupon_lst = coupon_lst
     def search_acc_by_id(self,acc_id):
         for i in self.__acc_lst:
             if i.get_acc_id() == acc_id:
@@ -117,12 +118,15 @@ class Controller:
         cart.remove_cartitem(cartitem_id)
         print('Remove Success')
 
-    def creat_order_acc(self, account , name , addr , city , post , phone):
+    def creat_order_acc(self, account , name , addr , city , post , phone , discount):
         acc = self.search_acc_by_id(account)
         cart = acc.get_cart_shopping()
         cart_lst = acc.get_cart_shopping().get_cart_lst()
         address = Address(name, addr, city , post, phone)
-        my_order = Order(cart_lst , address , 'Wait For payment' , cart.get_price_total())
+        cart_price = cart.get_price_total()
+        total = cart_price-discount
+        print(cart_price, total)
+        my_order = Order(cart_lst , address , 'Wait For payment' ,total )
         acc.add_myorder(my_order)
         print('add myorder')
         return my_order.get_id()
@@ -180,6 +184,14 @@ class Controller:
             return True
         else:
             return False
+        
+    def search_coupon_by_code(self ,code):
+        if code == '':
+            return 0
+        else:
+            for i in self.__coupon_lst:
+                if i.get_code() == code:
+                    return i.get_discount()
     
 class Account:
     id_acc = 1
@@ -371,14 +383,17 @@ class Card(Payment):
     pass
 
 class Coupon:
-    def __init__(self, id , name , discount , expire):
-        self.__id = id
+    coupon_id = 1
+    def __init__(self ,code , name , discount , expire=''):
+        self.__id = Coupon.coupon_id
+        self.__code = code
         self.__name = name
         self.__discount = discount
         self.__expire = expire
+        Coupon.coupon_id += 1
 
-    def get_id(self):
-        return self.__id
+    def get_code(self):
+        return self.__code
     
     def get_name(self):
         return self.__name

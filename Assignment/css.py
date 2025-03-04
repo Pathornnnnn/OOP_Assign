@@ -525,6 +525,34 @@ product_css = '''
 
 checkout_css = '''
                     """
+                    .coupon-btn {
+                        background: #f39c12;
+                        color: white;
+                        padding: 8px;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        margin-left: 10px;
+                        font-size: 14px;
+                        transition: 0.3s ease-in-out;
+                    }
+
+                    .coupon-btn:hover {
+                        background: #e67e22;
+                    }
+
+                    .error {
+                        color: red;
+                        font-weight: bold;
+                    }
+
+                    .total-price {
+                        font-size: 20px;
+                        font-weight: bold;
+                        color: #e67e22;
+                    }
+
+
                     head {
                         background-color: #ffffff;
                     }

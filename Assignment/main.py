@@ -12,8 +12,10 @@ os.makedirs(UPLOAD_DIR, exist_ok=True)
 # PATH
 global account_now
 global tem_address
+global discount
 account_now = None #<----- ที่จริงต้องเก็บเป็น string
 order_id = None
+discount = 0
 #/login
 @rt("/login")
 def get():
@@ -439,16 +441,16 @@ def post(product_id: int):
 
     return Redirect('/view_cart')
 
-#checkout
 @rt('/checkout')
 def checkout():
     print(account_now)
     if not account_now:
-        return Div(P("account Not Found", cls="error"))
-    
+        return Div(P("Account Not Found", cls="error"))
+
     temp_acc = OrangeIT.search_acc_by_id(account_now)
     cartitems_lst = temp_acc.get_cart_shopping().get_cart_lst()
     total_price = temp_acc.get_cart_shopping().get_price_total()
+
     return Style(checkout_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
         Div(
@@ -458,52 +460,61 @@ def checkout():
                 *[Tr(Td(item.get_product().get_name()), Td(item.get_quantity()), Td(f"฿{item.get_product().get_price()}")) for item in cartitems_lst],
                 cls="checkout-table"
             ),
-            P(f"Total: ฿{total_price}", cls="total-price"),
+            Div(P(f"Total: ฿{total_price}", cls="total-price", id="total_prices")),  # ใช้ ID เพื่ออัปเดต
             
-            # ฟอร์มสำหรับกรอกที่อยู่
+            # ฟอร์มที่อยู่ + คูปอง
             Form(
                 H3("Shipping Address"),
+                Div(Label("Full Name"), Input(type="text", id="full_name", required=True, placeholder="Enter your full name", cls="input-field")),
+                Div(Label("Address"), Input(type="text", id="address", required=True, placeholder="Enter your address", cls="input-field")),
+                Div(Label("City"), Input(type="text", id="city", required=True, placeholder="Enter your city", cls="input-field")),
+                Div(Label("Postal Code"), Input(type="text", id="postal_code", required=True, placeholder="Enter postal code", cls="input-field")),
+                Div(Label("Phone Number"), Input(type="tel", id="phone", required=True, placeholder="Enter phone number", cls="input-field")),
+                
+                # ✅ ปุ่มใช้คูปอง
                 Div(
-                    Label("Full Name"),
-                    Input(type="text", id="full_name", required=True, placeholder="Enter your full name", cls="input-field")
-                ),
-                Div(
-                    Label("Address"),
-                    Input(type="text", id="address", required=True, placeholder="Enter your address", cls="input-field")
-                ),
-                Div(
-                    Label("City"),
-                    Input(type="text", id="city", required=True, placeholder="Enter your city", cls="input-field")
-                ),
-                Div(
-                    Label("Postal Code"),
-                    Input(type="text", id="postal_code", required=True, placeholder="Enter postal code", cls="input-field")
-                ),
-                Div(
-                    Label("Phone Number"),
-                    Input(type="tel", id="phone", required=True, placeholder="Enter phone number", cls="input-field")
+                    Label("Coupon"),
+                    Input(type="text", id="coupon", placeholder="Enter coupon code", cls="input-field"),
+                    Button("Use Code", hx_post="/use_coupon/", hx_target="#total_prices", hx_include="[name='coupon']", cls="coupon-btn")
                 ),
                 
-                Button("Proceed to Payment", cls="checkout-btn", hx_post='/payment', hx_target='body'),
+                Button("Proceed to Payment", cls="checkout-btn", hx_post="/payment", hx_target="body"),
                 cls="checkout-container"
             ),
         ),
         Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="container")
     )
 
-
+@rt('/use_coupon/')
+def apply_coupon(coupon: str):
+    global discount
+    print('Code :',coupon)
+    temp_acc = OrangeIT.search_acc_by_id(account_now)
     
+    if not temp_acc:
+        return P("❌ Error: Account not found", cls="error")
+
+    total_price = temp_acc.get_cart_shopping().get_price_total()
+    discount = OrangeIT.search_coupon_by_code(coupon)  # ตรวจสอบคูปอง
+
+    if discount > 0:  
+        new_total = total_price - discount  # หักส่วนลด
+        return P(f"🎉 คุณได้รับส่วนลด {discount} บาท Total: ฿{new_total:.2f}", cls="total-price")
+    else:
+        return P("❌ คูปองไม่ถูกต้อง", cls="error")
+
 
 #payment    
 @rt('/payment')
-def post(full_name:str , address: str , city : str , postal_code: str , phone: str):
+def post(full_name:str , address: str , city : str , postal_code: str , phone: str ):
     global order_id
+    global discount
     if not account_now:
         return Div(P("account Not Found", cls="error"))
     acc = OrangeIT.search_acc_by_id(account_now)
     for i in acc.get_myorder_lst():
         print(i)
-    order_id = OrangeIT.creat_order_acc(account_now, full_name, address, city, postal_code ,phone)
+    order_id = OrangeIT.creat_order_acc(account_now, full_name, address, city, postal_code ,phone , discount)
     for i in acc.get_myorder_lst():
         print(i)
     OrangeIT.clear_cart_account_by_id(account_now)
@@ -617,7 +628,17 @@ def post(order_id: int):
         Ul(
             *[Li(f"{item.get_product().get_name()} - {item.get_quantity()} ชิ้น (฿{item.get_price_product() * item.get_quantity()})") for item in order.get_list()]
         ),
-        Button("ปิด", cls="close-btn", hx_on="click: this.closest('.order-details-container').innerHTML = ''")
+        Button(
+                    "ปิด",
+                    cls="close-btn",
+                    hx_post="/clear_order_details",
+                    hx_target="#order-details-container",
+                    hx_swap="innerHTML"
+                )
+
     ),Style(view_order)
 
+@rt('/clear_order_details')
+def post():
+    return ""
 serve()

@@ -60,8 +60,11 @@ def create_instance():
     product_lst.append(product20)
     product_lst.append(product21)
 
+    coupon_lst = []
+    coupon1 = Coupon('XYZ','TOUCH',1)
+    coupon_lst.append(coupon1)
     #init System
-    OrangeIT = Controller(user_lst,product_lst,admin_lst)
+    OrangeIT = Controller(user_lst,product_lst,admin_lst,coupon_lst)
 
     # TEST API
     # # เพิ่มสินค้า Monitor จำนวน 2 ชิ้น ลงตะกร้าของไอดี 1 (MAX)

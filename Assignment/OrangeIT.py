@@ -1,17 +1,34 @@
 class Controller:
-    def __init__(self, acc_lst, product_lst):
+    def __init__(self, acc_lst, product_lst , admin_lst):
         self.__acc_lst = acc_lst
         self.__product_lst = product_lst
-
+        self.__admin_lst = admin_lst
     def search_acc_by_id(self,acc_id):
         for i in self.__acc_lst:
             if i.get_acc_id() == acc_id:
+                print('searh customer found')
                 return i
-            
+
+        for i in self.__admin_lst:
+            if i.get_acc_id() == acc_id:
+                print('searh admin found')
+                return i
+        
+        print('searh not found')
+        return None
+    
     def search_acc_by_email(self, email):
         for acc in self.__acc_lst:
             if acc.get_acc_email() == email:
+                print('searh customer found')
                 return acc
+            
+        for acc in self.__admin_lst:
+            if acc.get_admin_email() == email:
+                print('searh admin found')
+                return acc
+
+        print('searh not found')
         return None
     
     def search_product_by_id(self, product_id):
@@ -57,15 +74,22 @@ class Controller:
     
     def search(self, name):
         result = []
-        for product in self.__lst_product:
+        for product in self.__product_lst:
             if name.lower() in product.get_name().lower():
                 result.append(product)
         return result
     
     def check_login(self, email, password):
         acc = self.search_acc_by_email(email)
-        if isinstance(acc,Account):
+        print(acc)
+        if isinstance(acc,Customer):
             if acc.get_acc_email() == email and acc.get_password() == password:
+                return acc
+            else:
+                return None
+            
+        if isinstance(acc,Admin):
+            if acc.get_admin_email() == email and acc.get_password() == password:
                 return acc
             else:
                 return None
@@ -115,6 +139,19 @@ class Controller:
         print('can not update')
         return False
     
+    def change_status_order_by_id(self, order_id , message):
+        print(order_id)
+        order_lst = self.get_pending_orders()
+        print(order_lst)
+        for i in order_lst:
+            if i.get_id() == order_id:
+                i.update_status(message)
+                print('Update status success')
+                return True
+            
+        print('can not update')
+        return False
+    
     def clear_cart_account_by_id(self,account ):
         acc = self.search_acc_by_id(account)
         cart = acc.get_cart_shopping()
@@ -127,6 +164,22 @@ class Controller:
         for i in myorder:
             if i.get_id() == order_id:
                 return i
+            
+    def get_pending_orders(self):
+        pending_lst = []
+        for i in self.__acc_lst:
+            for j in i.get_myorder_lst():
+                if j.get_Status() == 'Wait Verify':
+                    pending_lst.append(j)
+
+        return pending_lst
+
+    def verify_admin(self, account_id):
+        acc = self.search_acc_by_id(account_id)
+        if isinstance(acc,Admin):
+            return True
+        else:
+            return False
     
 class Account:
     id_acc = 1
@@ -199,6 +252,12 @@ class Admin(Account):
     def __init__(self, name, email , password , age):
         super().__init__( name, email , password , age)
 
+    def get_admin_email(self):
+        return self.get_email_acc()
+    
+    def get_password(self):
+        return self.get_password_acc()
+    
 class Product:
     product_id = 1
     def __init__(self, name, price, description, stock ,img):
@@ -344,7 +403,7 @@ class Order:
         return self.__list
     
     def get_address(self):
-        return self.__address
+        return self.__address.get_addr()
     
     def get_Status(self):
         return self.__Status
@@ -379,3 +438,6 @@ class Address:
         self.__city = city
         self.__post_code = post_code
         self.__phone_number = phone
+
+    def get_addr(self):
+        return f'ชื่อ : {self.__name} ที่อยู่ : {self.__addr} จังหวัด : {self.__city} {self.__post_code} เบอร์โทร : {self.__phone_number}'

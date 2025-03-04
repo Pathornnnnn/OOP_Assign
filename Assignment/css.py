@@ -238,6 +238,10 @@ add_css = '''
                     transition: background 0.3s ease;
                 }
 
+                a{
+                    text-decoration: none;
+                    color: inherit;
+                }
                 .search-btn:hover {
                     background: #e67e22;
                 }
@@ -352,12 +356,15 @@ register_css = '''
 
 
 login_css = '''
-                    """
                     head {
-                        background-color:rgb(255, 255, 255);
+                        background-color: rgb(255, 255, 255);
+                    }
+                    a{
+                        text-decoration: none;
+                        color: inherit;
                     }
                     body {
-                        background-color:rgb(255, 255, 255);
+                        background-color: rgb(255, 255, 255);
                         display: flex;
                         justify-content: center;
                         align-items: center;
@@ -365,43 +372,70 @@ login_css = '''
                         margin: 0;
                         flex-direction: column;
                     }
+
                     .login-title {
-                        color: rgb(0, 0, 0);
+                        color: #d35400;
                         text-align: center;
                         font-size: 50px;
-                        margin: 20px 0;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
                     }
+
                     .signup-container {
                         background: white;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0 0 10px rgb(187, 187, 187);
-                        width: 300px;
+                        padding: 30px;
+                        border-radius: 15px;
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                        width: 350px;
                         text-align: center;
                     }
-                    .signup-btn {
-                        width: 100%;
-                        padding: 8px;
-                        background-color:rgb(255, 170, 0);
-                        color: white;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                    }
-                    .signup-btn:hover {
-                        background-color:rgb(255, 132, 0);
-                    }
+
                     .login-form input {
                         color: rgb(0, 0, 0);
-                        background-color:rgb(239, 239, 239);
+                        background-color: rgb(239, 239, 239);
                         width: 100%;
-                        padding: 10px;
+                        padding: 12px;
                         margin: 10px 0;
                         border: 1px solid #ccc;
-                        border-radius: 5px;
+                        border-radius: 8px;
+                        font-size: 16px;
+                        transition: all 0.3s ease-in-out;
                     }
-                    """
 
+                    .login-form input:focus {
+                        border-color: #e67e22;
+                        outline: none;
+                        box-shadow: 0 0 5px rgba(230, 126, 34, 0.5);
+                    }
+
+                    .signup-btn {
+                        width: 100%;
+                        padding: 12px;
+                        font-size: 18px;
+                        font-weight: bold;
+                        background: linear-gradient(135deg, #e67e22, #d35400);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    .signup-btn:hover {
+                        background: linear-gradient(135deg, #f39c12, #e67e22);
+                        transform: translateY(-3px) scale(1.05);
+                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+                    }
+
+                    .signup-btn:active {
+                        transform: scale(0.95);
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                    }
 
         '''
 
@@ -706,31 +740,42 @@ body {
     color: #888;
 }
 '''
-
 view_cart_css = '''
-                    """
                     .cart-header {
                         text-align: center;
-                        font-size: 24px;
+                        font-size: 28px;
                         font-weight: bold;
+                        color: #ffcc00;
                         margin-bottom: 20px;
+                        text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.2);
                     }
 
                     .cart-table {
                         width: 100%;
                         border-collapse: collapse;
-                        margin-bottom: 20px;
-                    }
-
-                    .cart-table th, .cart-table td {
-                        border: 1px solid #ddd;
-                        padding: 10px;
-                        text-align: center;
+                        background: #1e1e1e;
+                        border-radius: 10px;
+                        overflow: hidden;
+                        box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
                     }
 
                     .cart-table th {
-                        background-color: #f4a261;
+                        background: #f4a261;
                         color: white;
+                        padding: 12px;
+                        text-align: center;
+                        font-size: 1.2rem;
+                    }
+
+                    .cart-table td {
+                        padding: 12px;
+                        text-align: center;
+                        border-bottom: 1px solid #444;
+                        color: #fff;
+                    }
+
+                    .cart-table tr:hover {
+                        background: rgba(255, 255, 255, 0.1);
                     }
 
                     .qty-form {
@@ -740,17 +785,18 @@ view_cart_css = '''
                     }
 
                     .qty-btn {
-                        background-color: #f4a261;
+                        background: #f4a261;
                         color: white;
                         border: none;
-                        padding: 5px 10px;
+                        padding: 8px 12px;
                         cursor: pointer;
                         font-size: 16px;
-                        margin: 0 5px;
+                        border-radius: 5px;
+                        transition: background 0.3s ease-in-out;
                     }
 
                     .qty-btn:hover {
-                        background-color: #e76f51;
+                        background: #e76f51;
                     }
 
                     .qty-span {
@@ -760,8 +806,9 @@ view_cart_css = '''
                     }
 
                     .total-price {
-                        font-size: 20px;
+                        font-size: 22px;
                         font-weight: bold;
+                        color: #28a745;
                         text-align: right;
                         margin-top: 20px;
                     }
@@ -769,22 +816,22 @@ view_cart_css = '''
                     .checkout-btn {
                         display: block;
                         width: 100%;
-                        padding: 10px;
-                        background-color: #2a9d8f;
+                        padding: 12px;
+                        background: #2a9d8f;
                         color: white;
                         text-align: center;
-                        font-size: 18px;
+                        font-size: 20px;
+                        font-weight: bold;
                         border: none;
+                        border-radius: 6px;
                         cursor: pointer;
                         margin-top: 20px;
+                        transition: background 0.3s ease-in-out;
                     }
 
                     .checkout-btn:hover {
-                        background-color: #21867a;
+                        background: #21867a;
                     }
-
-                    """
-
 '''
 
 
@@ -810,57 +857,220 @@ popup_css = '''
                 """
 
 '''
+view_order = """
+            head {
+                background-color: rgb(255, 255, 255);
+            }
 
-view_order = '''
-                .orders-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1rem;
-}
+            body {
+                font-family: 'Arial', sans-serif;
+                background-color: #121212; /* สีพื้นหลังเข้ม */
+                color: #fff;
+            }
 
-.order-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 1rem;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
+            .order-header {
+                font-size: 1.5rem;
+                font-weight: bold;
+                margin-bottom: 1rem;
+            }
 
-.order-id {
-    font-size: 1.2rem;
-    font-weight: bold;
-}
+            .order-table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #1e1e1e;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+            }
 
-.order-status {
-    color: #007bff;
-    font-weight: bold;
-}
+            .order-table th {
+                background: #333;
+                color: #ffcc00;
+                padding: 12px;
+                text-align: left;
+                font-size: 1rem;
+            }
 
-.order-address {
-    color: #666;
-}
+            .order-table td {
+                padding: 12px;
+                border-bottom: 1px solid #444;
+            }
 
-.order-total {
-    color: #28a745;
-    font-weight: bold;
-}
+            .order-table tr:hover {
+                background: rgba(255, 255, 255, 0.1);
+            }
 
-.btn-view {
-    background: #007bff;
-    color: white;
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background 0.3s;
-}
+            .order-status {
+                font-weight: bold;
+                color: #ffcc00;
+                background: rgba(255, 204, 0, 0.2);
+                padding: 8px;
+                border-radius: 5px;
+                text-align: center;
+            }
 
-.btn-view:hover {
-    background: #0056b3;
-}
+            .order-total {
+                font-weight: bold;
+                color: #28a745;
+            }
+
+            .order-address {
+                color: #bbb;
+            }
+
+            .view-btn {
+                background: #007bff;
+                color: white;
+                padding: 8px 12px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: background 0.3s ease-in-out;
+            }
+
+            .view-btn:hover {
+                background: #0056b3;
+            }
+        """
+
+admin_home_css = '''
+                    .admin-header {
+                        text-align: center;
+                        font-size: 32px;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                        color: #d35400;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                    }
+
+                    .admin-menu {
+                        display: flex;
+                        flex-direction: column;
+                        align-items: center;
+                        gap: 20px;
+                        margin-top: 30px;
+                    }
+
+                    .admin-btn {
+                        background: linear-gradient(135deg, #e67e22, #d35400);
+                        color: white;
+                        padding: 14px 28px;
+                        font-size: 20px;
+                        font-weight: bold;
+                        border: none;
+                        border-radius: 12px;
+                        cursor: pointer;
+                        text-decoration: none;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 10px;
+                        width: 260px;
+                        text-align: center;
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+                        transition: all 0.3s ease-in-out;
+                    }
+
+                    a{
+                        text-decoration: none;
+                        color: inherit;
+                    }
+
+                    .admin-btn a {
+                        text-decoration: none;
+                        color: inherit;
+                    }
+
+                    .admin-btn:hover {
+                        transform: translateY(-3px) scale(1.05);
+                        background: linear-gradient(135deg, #f39c12, #e67e22);
+                        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+                    }
+
+                    .admin-btn:active {
+                        transform: scale(0.95);
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+                    }
+
+
+''' 
+
+
+
+verify_order = '''
+                    """
+                    .verify-header {
+                        text-align: center;
+                        font-size: 32px;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                        color: #28a745;
+                        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+                    }
+
+                    .order-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-top: 20px;
+                        background: white;
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+                        border-radius: 10px;
+                        overflow: hidden;
+                    }
+
+                    .order-table th, .order-table td {
+                        border: 1px solid #ddd;
+                        padding: 12px;
+                        text-align: center;
+                        font-size: 16px;
+                    }
+
+                    .order-table th {
+                        background: linear-gradient(135deg, #28a745, #218838);
+                        color: white;
+                        font-size: 18px;
+                        font-weight: bold;
+                    }
+
+                    .order-items {
+                        text-align: left;
+                    }
+
+                    .approve-btn, .reject-btn {
+                        padding: 8px 14px;
+                        font-size: 16px;
+                        font-weight: bold;
+                        border: none;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        transition: all 0.3s ease-in-out;
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+                    }
+
+                    .approve-btn {
+                        background: linear-gradient(135deg, #28a745, #218838);
+                        color: white;
+                    }
+
+                    .approve-btn:hover {
+                        background: linear-gradient(135deg, #34d058, #28a745);
+                        transform: translateY(-2px) scale(1.05);
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+                    }
+
+                    .reject-btn {
+                        background: linear-gradient(135deg, #dc3545, #c82333);
+                        color: white;
+                    }
+
+                    .reject-btn:hover {
+                        background: linear-gradient(135deg, #e74c3c, #dc3545);
+                        transform: translateY(-2px) scale(1.05);
+                        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+                    }
+                """
 
 '''

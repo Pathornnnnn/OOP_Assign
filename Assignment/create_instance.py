@@ -4,6 +4,10 @@ def create_instance():
 
     maxkey = Customer('MAX','MAX@gmail.com','111',11)
     jj = Customer('JJ','JJ@gmail.com','2222',32)
+    admin1 = Admin('Gold','admin@gmail.com','1234',25)
+
+    admin_lst = []
+    admin_lst.append(admin1)
 
     user_lst = []
     user_lst.append(maxkey)
@@ -57,7 +61,7 @@ def create_instance():
     product_lst.append(product21)
 
     #init System
-    OrangeIT = Controller(user_lst,product_lst)
+    OrangeIT = Controller(user_lst,product_lst,admin_lst)
 
     # TEST API
     # # เพิ่มสินค้า Monitor จำนวน 2 ชิ้น ลงตะกร้าของไอดี 1 (MAX)

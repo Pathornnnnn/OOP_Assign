@@ -45,7 +45,10 @@ def post(email: str, password: str):
     if acc:
         print(f"✅ Login Success: {acc}")
         account_now = acc.get_acc_id()
-        return Redirect("/")  # กลับไปหน้าแรกถ้า Login สำเร็จ
+        if not OrangeIT.verify_admin(account_now):
+            return Redirect("/")  # กลับไปหน้าแรกถ้า Login สำเร็จ
+        else:
+            return Redirect("/admin_home")
     return "❌ Login Failed! กรุณาตรวจสอบอีเมลหรือรหัสผ่าน", 401  # แจ้งเตือนถ้าข้อมูลผิด
 
 #logout
@@ -77,7 +80,7 @@ def get():
             ),
             _class='register-container',style="align-items: center;"
         ),
-        Style(register_css)
+        Style(login_css)
     )
 
 #/home
@@ -196,6 +199,105 @@ def get():
         )
     )
 
+
+@rt('/admin_home')
+def get():
+    return Html(
+        Body(
+            Div(
+                H1("📌 Admin Dashboard", cls="admin-header"),
+                Div(
+                    A(Button("➕ เพิ่มสินค้า", cls="admin-btn"), href="/add_product"),
+                    A(Button("✅ ตรวจสอบคำสั่งซื้อ", cls="admin-btn"), href="/verify_order"),
+                    cls="admin-menu"
+                ),
+                id="admin-home"
+            )
+        )
+    ),Style(admin_home_css)
+
+@rt('/approve_order/{order}')
+def post(order : int):
+    print('apporve')
+    OrangeIT.change_status_order_by_id(order, "Accept Order (wait for shipping)")
+    return Redirect('/verify_order')
+
+@rt('/reject_order/{order_id}')
+def post(order_id : int):
+    print('reject')
+    OrangeIT.change_status_order_by_id(order_id, "Reject Order")
+    return Redirect('/verify_order')
+
+
+@rt('/verify_order')
+def get():
+    if not OrangeIT.verify_admin(account_now):
+        print('you not admin bye')
+        return Div(P("account Not Found", cls="error"))
+    else:
+        orders = OrangeIT.get_pending_orders()  # ดึงคำสั่งซื้อที่รอการตรวจสอบ
+        return Html(
+            Body(
+                Div(
+                    H1("✅ ตรวจสอบคำสั่งซื้อ", cls="verify-header"),
+                    Table(
+                        Tr(Th("Order ID"), Th("สินค้า"), Th("ที่อยู่"), Th("ยอดรวม"), Th("ดำเนินการ")),
+                        *[
+                            Tr(
+                                Td(order.get_id()),
+                                Td(
+                                    Ul(
+                                        *[Li(item.get_product().get_name()) for item in order.get_list()]
+                                    ),
+                                    cls="order-items"
+                                ),
+                                Td(order.get_address(), cls="order-address"),
+                                Td(f"฿{order.get_TotalAmount()}", cls="order-total"),
+                                Td(
+                                    Form(
+                                        Button("✅ อนุมัติ", type="submit", cls="approve-btn"),
+                                        action=f"/approve_order/{order.get_id()}",
+                                        method="post",
+                                        hx_post=f"/approve_order/{order.get_id()}",
+                                        hx_target="closest tr"
+                                    ),
+                                    Form(
+                                        Button("❌ ปฏิเสธ", type="submit", cls="reject-btn"),
+                                        action=f"/reject_order/{order.get_id()}",
+                                        method="post",
+                                        hx_post=f"/reject_order/{order.get_id()}",
+                                        hx_target="closest tr"
+                                    )
+                                )
+                            )
+                            for order in orders
+                        ],
+                        cls="order-table"
+                    ),
+                    id="verify-orders"
+                )
+            )
+        ),Style(verify_order)
+
+
+
+@rt('/add_product')
+def post(name: str, price: str, description:str ,quantity:str ,img: UploadFile):
+    file_path = os.path.join(UPLOAD_DIR, img.filename)
+    with open(file_path, "wb") as f:
+        f.write(img.file.read())
+    relative_path = f"{UPLOAD_DIR}/{img.filename}"
+
+    product = Product(name, price, description, description, relative_path)
+    OrangeIT.add_product(product)
+    
+    return Div(
+        Img(src=product.get_img(), alt=product.get_name()),
+        H3(product.get_name()),
+        P(f"Price : {product.get_price()} THB"),
+        cls="product-card"
+    )
+
 #search
 @rt('/search')
 def get(name: str):
@@ -286,8 +388,10 @@ def get():
     cart = temp_acc.get_cart_shopping()
     total_price = cart.get_price_total()
     cart_items = cart.get_cart_lst()
+    total_quantity = sum(item.get_quantity() for item in cart_items)
+
     return Div(
-        H1(f'🛒 ตะกร้าสินค้า ({sum(item.get_quantity() for item in cart_items)})', cls='cart-header'),
+        H1(f'🛒 ตะกร้าสินค้า ({total_quantity})', cls='cart-header'),
         Table(
             Tr(Th("สินค้า"), Th("จำนวน"), Th("ราคา"), Th("ลบ")),
             *[
@@ -307,9 +411,9 @@ def get():
                 for item in cart_items
             ],
             cls="cart-table"
-        ),
+        ) if total_quantity > 0 else P("❌ ตะกร้าสินค้าว่าง กรุณาเลือกสินค้าก่อนทำการสั่งซื้อ", cls="cart-empty-msg"),
         P(f"ยอดรวม: ฿{total_price}", cls="total-price"),
-        Form(Button("ดำเนินการสั่งซื้อ", cls="checkout-btn", type="submit"), action="/checkout"),
+        Form(Button("ดำเนินการสั่งซื้อ", cls="checkout-btn", type="submit", disabled=(total_quantity == 0)), action="/checkout"),
         Style(view_cart_css),
         id="cart"
     )
@@ -428,7 +532,7 @@ def get():
     OrangeIT.clear_cart_account_by_id(account_now)
     return Redirect('/')
 
-@rt('/add')
+@rt('/add_product')
 def get():
     return  Body(
                 Div(
@@ -456,22 +560,7 @@ def get():
                 Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="footer"),Style(add_css)
             )
 
-@rt('/add_product')
-def post(name: str, price: str, description:str ,quantity:str ,img: UploadFile):
-    file_path = os.path.join(UPLOAD_DIR, img.filename)
-    with open(file_path, "wb") as f:
-        f.write(img.file.read())
-    relative_path = f"{UPLOAD_DIR}/{img.filename}"
 
-    product = Product(name, price, description, description, relative_path)
-    OrangeIT.add_product(product)
-    
-    return Div(
-        Img(src=product.get_img(), alt=product.get_name()),
-        H3(product.get_name()),
-        P(f"Price : {product.get_price()} THB"),
-        cls="product-card"
-    )
 @rt('/view_myorder')
 def get():
     global account_now
@@ -505,7 +594,7 @@ def get():
                     ],
                     cls="order-table"
                 ),
-                Div(id="order-details-container", cls="order-details-container"),Style(view_cart_css),
+                Div(id="order-details-container", cls="order-details-container"),
                 id="orders"
             ),Style(view_order)
         )
@@ -530,9 +619,5 @@ def post(order_id: int):
         ),
         Button("ปิด", cls="close-btn", hx_on="click: this.closest('.order-details-container').innerHTML = ''")
     ),Style(view_order)
-
-@rt('/verify')
-def get():
-    pass
 
 serve()

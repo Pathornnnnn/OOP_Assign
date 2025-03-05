@@ -173,7 +173,7 @@ class Controller:
         pending_lst = []
         for i in self.__acc_lst:
             for j in i.get_myorder_lst():
-                if j.get_Status() == 'Wait Verify':
+                if j.get_status() == 'Wait Verify':
                     pending_lst.append(j)
 
         return pending_lst
@@ -193,6 +193,27 @@ class Controller:
                 if i.get_code() == code:
                     return i.get_discount()
     
+
+    def delete_product_by_id(self, product_id):
+        print(f'delete product id : {product_id}')
+        try:
+            product = self.search_product_by_id(product_id)
+            self.__product_lst.remove(product)
+            return True
+        except:
+            return False
+        
+    def update_product(self,product_id, name, price, stock):
+        try:
+            print(f'Update id {product_id}')
+            product = self.search_product_by_id(product_id)
+            product.update_product(name, price, stock)
+        except:
+            return False
+    
+    def add_product(self, product):
+        self.__product_lst.append(product)
+        
 class Account:
     id_acc = 1
     def __init__(self,name, email , password , age):
@@ -307,6 +328,15 @@ class Product:
     
     def down_stock(self, quantity):
         self.__stock -= quantity
+
+    def update_product(self, name=None, price=None, stock=None):
+        if name is not None:
+            self.__name = name
+        if price is not None:
+            self.__price = price
+        if stock is not None:
+            self.__stock = stock
+
     
 class Cart:
     def __init__(self,Cartitem_lst=[]):
@@ -376,7 +406,7 @@ class Payment:
         self.__id = id_pay
         self.__amount = amount
 
-class QRcode(Payment):
+class QRCode(Payment):
     pass
 
 class Card(Payment):
@@ -420,11 +450,12 @@ class Order:
     def get_address(self):
         return self.__address.get_addr()
     
-    def get_Status(self):
+    def get_status(self):
         return self.__Status
     
-    def get_TotalAmount(self):
+    def get_total_amount(self):
         return self.__TotalAmount
+    
     def update_status(self, massage):
         self.__Status = massage
         return True

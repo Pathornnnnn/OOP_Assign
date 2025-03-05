@@ -1102,3 +1102,133 @@ verify_order = '''
                 """
 
 '''
+
+manage_product_css = '''
+                        .manage-header {
+                            text-align: center;
+                            font-size: 24px;
+                            font-weight: bold;
+                            margin-bottom: 20px;
+                        }
+
+                        .add-btn {
+                            display: block;
+                            margin: 10px auto;
+                            padding: 10px;
+                            background-color: #2a9d8f;
+                            color: white;
+                            text-align: center;
+                            font-size: 18px;
+                            border: none;
+                            cursor: pointer;
+                        }
+
+                        .add-btn:hover {
+                            background-color: #21867a;
+                        }
+
+                        .product-table {
+                            width: 100%;
+                            border-collapse: collapse;
+                            margin-top: 20px;
+                        }
+
+                        .product-table th, .product-table td {
+                            border: 1px solid #ddd;
+                            padding: 10px;
+                            text-align: center;
+                        }
+
+                        .product-table th {
+                            background-color: #f4a261;
+                            color: white;
+                        }
+
+                        .edit-btn, .delete-btn {
+                            background-color: #f4a261;
+                            color: white;
+                            border: none;
+                            padding: 5px 10px;
+                            cursor: pointer;
+                            font-size: 14px;
+                            margin: 0 5px;
+                        }
+
+                        .edit-btn:hover {
+                            background-color: #e76f51;
+                        }
+
+                        .delete-btn {
+                            background-color: #ff5b5b;
+                        }
+
+                        .delete-btn:hover {
+                            background-color: #ff2b2b;
+                        }
+
+
+
+'''
+
+
+edit_product_css = '''
+                    .edit-header {
+                        text-align: center;
+                        font-size: 28px;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                        color: #333;
+                    }
+
+                    .edit-form {
+                        max-width: 400px;
+                        margin: 0 auto;
+                        padding: 20px;
+                        background: #fff;
+                        border-radius: 8px;
+                        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                        display: flex;
+                        flex-direction: column;
+                    }
+
+                    .edit-form label {
+                        font-size: 16px;
+                        font-weight: bold;
+                        margin-bottom: 5px;
+                        color: #555;
+                    }
+
+                    .edit-form input {
+                        width: 100%;
+                        padding: 10px;
+                        margin-bottom: 15px;
+                        border: 1px solid #ccc;
+                        border-radius: 5px;
+                        font-size: 16px;
+                    }
+
+                    .edit-form input:focus {
+                        border-color: #007bff;
+                        outline: none;
+                    }
+
+                    .save-btn {
+                        width: 100%;
+                        padding: 12px;
+                        background-color: #28a745;
+                        color: white;
+                        font-size: 18px;
+                        font-weight: bold;
+                        border: none;
+                        border-radius: 5px;
+                        cursor: pointer;
+                        transition: background 0.3s ease;
+                    }
+
+                    .save-btn:hover {
+                        background-color: #218838;
+                    }
+
+
+
+'''

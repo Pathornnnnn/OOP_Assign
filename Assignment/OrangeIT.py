@@ -1,9 +1,11 @@
 class Controller:
-    def __init__(self, acc_lst, product_lst , admin_lst , coupon_lst=[]):
+    def __init__(self, acc_lst, product_lst , admin_lst , coupon_lst=[] , review_lst=[]):
         self.__acc_lst = acc_lst
         self.__product_lst = product_lst
         self.__admin_lst = admin_lst
         self.__coupon_lst = coupon_lst
+        self.__review_lst = review_lst
+
     def search_acc_by_id(self,acc_id):
         for i in self.__acc_lst:
             if i.get_acc_id() == acc_id:
@@ -213,7 +215,23 @@ class Controller:
     
     def add_product(self, product):
         self.__product_lst.append(product)
-        
+
+    def get_reviews_by_product_id(self, product_id):
+        review_lst = []
+        product = self.search_product_by_id(product_id)
+        name_product = product.get_name()
+        for review in self.__review_lst:
+            if name_product == review.get_product_name():
+                review_lst.append(review)
+        print(review_lst)
+        return review_lst      
+    
+    def add_review(self , acc_id , product_id , rating , comment ):
+        acc = self.search_acc_by_id(acc_id)
+        product = self.search_product_by_id(product_id)
+        review_ins = Review(acc, product, rating, comment)
+        self.__review_lst.append(review_ins)
+        return True
 class Account:
     id_acc = 1
     def __init__(self,name, email , password , age):
@@ -244,7 +262,6 @@ class Account:
 
     def get_cart_shopping(self):
         return self.__myCart_shopping
-    
     
 class Customer(Account):
     def __init__(self, name, email , password , age):
@@ -337,7 +354,6 @@ class Product:
         if stock is not None:
             self.__stock = stock
 
-    
 class Cart:
     def __init__(self,Cartitem_lst=[]):
         self.__Cartitem_lst = Cartitem_lst
@@ -406,12 +422,6 @@ class Payment:
         self.__id = id_pay
         self.__amount = amount
 
-class QRCode(Payment):
-    pass
-
-class Card(Payment):
-    pass
-
 class Coupon:
     coupon_id = 1
     def __init__(self ,code , name , discount , expire=''):
@@ -464,19 +474,29 @@ class Order:
         return f'{self.__id}  {self.__list} {self.__address} {self.__Status} {self.__TotalAmount} '
 
 class Review:
-      def __init__(self, Id, product, rating , comment ):
-        self.__id = Id
+    review_id = 1
+    def __init__(self,user , product, rating , comment ):
+        self.__id = Review.review_id
+        self.__usr = user
         self.__product = product
         self.__rating = rating
         self.__comment = comment
+        Review.review_id += 1
+    
+    def get_user(self):
+        return self.__usr
+    
+    def get_user_name(self):
+        return self.__usr.get_name()
+    
+    def get_rating(self):
+        return self.__rating
+    
+    def get_comment(self):
+        return self.__comment
 
-class Shipment:
-    def __init__(self, id_ship , tracking_number , type_ship , date_ship):
-        self.__id_ship = id_ship
-        self.__tracking = tracking_number
-        self.__type = type_ship
-        self.__date = date_ship
-
+    def get_product_name(self):
+        return self.__product.get_name()
 class Address:
     def __init__(self, name ,addr , city, post_code, phone):
         self.__name = name

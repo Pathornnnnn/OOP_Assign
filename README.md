@@ -14,7 +14,11 @@
 4. run command :
     git remote add origin https://github.com/Pathornnnnn/OOP_Assign.git
 
-5. open to the folder Assignment
 
-6. run command :
+5. run command :
+     git pull origin master
+
+6. open to the folder Assignment
+
+7. run command :
     python -m uvicorn main:app --reload

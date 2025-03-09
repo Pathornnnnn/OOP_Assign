@@ -5,6 +5,13 @@ class Controller:
         self.__admin_lst = admin_lst
         self.__coupon_lst = coupon_lst
         self.__review_lst = review_lst
+    
+    def add_acc_to_lst(self,acc):
+        try:
+            self.__acc_lst.append(acc)
+            return True
+        except:
+            return False
 
     def search_acc_by_id(self,acc_id):
         for i in self.__acc_lst:
@@ -37,8 +44,7 @@ class Controller:
     def search_product_by_id(self, product_id):
         for i in self.__product_lst:
             if product_id == i.get_id():
-                return i
-        
+                return i    
             
     def search_product_by_name(self,name):
         for i in self.__product_lst:
@@ -195,7 +201,6 @@ class Controller:
                 if i.get_code() == code:
                     return i.get_discount()
     
-
     def delete_product_by_id(self, product_id):
         print(f'delete product id : {product_id}')
         try:
@@ -232,6 +237,17 @@ class Controller:
         review_ins = Review(acc, product, rating, comment)
         self.__review_lst.append(review_ins)
         return True
+    
+    def register(self, name , email , password , age):
+        new_acc = Customer(name , email , password , age)
+        print(new_acc)
+        try:
+            self.add_acc_to_lst(new_acc)
+            return True 
+        except:
+            return False
+        
+
 class Account:
     id_acc = 1
     def __init__(self,name, email , password , age):
@@ -497,6 +513,7 @@ class Review:
 
     def get_product_name(self):
         return self.__product.get_name()
+    
 class Address:
     def __init__(self, name ,addr , city, post_code, phone):
         self.__name = name

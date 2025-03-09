@@ -78,13 +78,21 @@ def get():
                 Input(Id='password', type='password', name='password', placeholder='password', required=True),
                 Input(Id='age', type='number', name='age', min='18', max='100',placeholder='Age'),
                 Button('Register', type='submit', _class='register-btn'),
-                action='/add', method='post',
+                action='/add_acc', method='post',
                 _class='register-form'
             ),
             _class='register-container',style="align-items: center;"
         ),
         Style(login_css)
     )
+
+@rt('/add_acc')
+def post(Fullname : str, email : str , password  :str , age :int):
+    try:
+        OrangeIT.register(Fullname, email, password , age)
+        return Redirect('/login')
+    except:
+        return False
 
 #/home
 @rt('/')

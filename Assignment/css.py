@@ -655,107 +655,126 @@ input[type="number"] {
 '''
 
 checkout_css = '''
-                    """
-                    .coupon-btn {
-                        background: #f39c12;
-                        color: white;
-                        padding: 8px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        margin-left: 10px;
-                        font-size: 14px;
-                        transition: 0.3s ease-in-out;
-                    }
+                   body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
-                    .coupon-btn:hover {
-                        background: #e67e22;
-                    }
+.container {
+    width: 50%;
+    padding: 20px;
+    background: white;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+    border-radius: 10px;
+}
 
-                    .error {
-                        color: red;
-                        font-weight: bold;
-                    }
+.header-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2c3e50;
+}
 
-                    .total-price {
-                        font-size: 20px;
-                        font-weight: bold;
-                        color: #e67e22;
-                    }
+.checkout-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 16px;
+}
 
+.checkout-table th, .checkout-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
 
-                    head {
-                        background-color: #ffffff;
-                    }
-                    body {
-                        font-family: Arial, sans-serif;
-                        background-color: #ffffff;
-                        margin: 0;
-                        padding: 0;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                    }
-                    .container {
-                        width: 50%;
-                        padding: 20px;
-                        background: white;
-                        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-                        margin-top: 50px;
-                        border-radius: 10px;
-                    }
-                    h2 {
-                        color: #f39c12;
-                        text-align: center;
-                    }
-                    .order-summary {
-                        padding: 10px;
-                        border-bottom: 1px solid #ddd;
-                    }
-                    .total {
-                        font-weight: bold;
-                        font-size: 18px;
-                    }
-                    .checkout-btn {
-                        background: #f39c12;
-                        color: white;
-                        padding: 10px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        display: block;
-                        width: 100%;
-                        text-align: center;
-                        margin-top: 20px;
-                        font-size: 16px;
-                    }
-                    .checkout-btn:hover {
-                        background: #e67e22;
-                    }
-                    
-                    /* ปรับแต่งฟอร์มที่อยู่ */
-                    .checkout-container label {
-                        font-weight: bold;
-                        display: block;
-                        margin-top: 10px;
-                        color: #555;
-                    }
+.checkout-table th {
+    background-color: #f39c12;
+    color: white;
+}
 
-                    .input-field {
-                        width: 100%;
-                        padding: 10px;
-                        margin: 5px 0;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        font-size: 16px;
-                        background-color: #f8f9fa;
-                        color: #333;
-                    }
+.total-price {
+    font-size: 20px;
+    font-weight: bold;
+    color: #e67e22;
+    text-align: right;
+    margin-top: 10px;
+}
 
-                    .input-field::placeholder {
-                        color: #888;
-                    }
-                    """
+/* ปรับสี label และ h3 เป็นสีดำ */
+.checkout-container label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+    color: #000; /* เปลี่ยนเป็นสีดำ */
+}
+
+h3 {
+    color: #000; /* เปลี่ยนเป็นสีดำ */
+}
+h2 {
+    color: #000; /* เปลี่ยนเป็นสีดำ */
+}
+
+.input-field {
+    width: 100%;
+    padding: 12px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.input-field:focus {
+    border-color: #f39c12;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(243, 156, 18, 0.5);
+}
+
+.coupon-btn, .checkout-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 15px;
+}
+
+.coupon-btn {
+    background-color: #3498db;
+    color: white;
+}
+
+.coupon-btn:hover {
+    background-color: #2980b9;
+}
+
+.checkout-btn {
+    background-color: #f39c12;
+    color: white;
+}
+
+.checkout-btn:hover {
+    background-color: #e67e22;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 20px;
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
 '''
 
 payment_css = '''
@@ -841,6 +860,25 @@ payment_css = '''
                         border-top: 1px solid #ddd;
                         margin-top: auto;
                     }
+
+                    .checkout-container label {
+                        font-weight: bold;
+                        display: block;
+                        margin-top: 10px;
+                        color: #000; /* เปลี่ยนเป็นสีดำ */
+                    }
+
+                    h3, h2, p {
+                        color: #000; /* เปลี่ยนเป็นสีดำ */
+                    }
+
+                    .footer {
+                        text-align: center;
+                        margin-top: 20px;
+                        color: #000; /* เปลี่ยนเป็นสีดำ */
+                        font-size: 14px;
+                    }
+
                     """
 '''
 

@@ -655,9 +655,9 @@ def checkout():
     total_price = temp_acc.get_cart_shopping().get_price_total()
 
     return Style(checkout_css), Div(
-        Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
+        Div(A(H1("ORANGE", cls="header-title"), href='/', style="color: #000; text-decoration: none; color: inherit;"), cls="header-container"),
         Div(
-            H2("🛒 Checkout"),
+            H2("🛒 Checkout", style="color: #000;"),
             Table(
                 Tr(Th("Product"), Th("Quantity"), Th("Price")),
                 *[Tr(Td(item.get_product().get_name()), Td(item.get_quantity()), Td(f"฿{item.get_product().get_price()}")) for item in cartitems_lst],
@@ -667,7 +667,7 @@ def checkout():
             
             # ฟอร์มที่อยู่ + คูปอง
             Form(
-                H3("Shipping Address"),
+                H3("Shipping Address" , style="color: #000;"),
                 Div(Label("Full Name"), Input(type="text", id="full_name", required=True, placeholder="Enter your full name", cls="input-field")),
                 Div(Label("Address"), Input(type="text", id="address", required=True, placeholder="Enter your address", cls="input-field")),
                 Div(Label("City"), Input(type="text", id="city", required=True, placeholder="Enter your city", cls="input-field")),

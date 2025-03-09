@@ -6,7 +6,6 @@ import os
 import shutil
 app, rt = fast_app()
 OrangeIT = create_instance()
-#print([[i.get_id() , i.get_name()]for i in OrangeIT.get_product_lst()])
 UPLOAD_DIR = "PIC"
 UPLOAD_DIR2 = "p/PIC"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
@@ -701,7 +700,7 @@ def apply_coupon(coupon: str):
     total_price = temp_acc.get_cart_shopping().get_price_total()
     discount = OrangeIT.search_coupon_by_code(coupon)  # ตรวจสอบคูปอง
 
-    if discount > 0:  
+    if discount != False:  
         new_total = total_price - discount  # หักส่วนลด
         return P(f"🎉 คุณได้รับส่วนลด {discount} บาท Total: ฿{new_total:.2f}", cls="total-price")
     else:
@@ -747,6 +746,23 @@ def get():
     OrangeIT.clear_cart_account_by_id(account_now)
     return Redirect('/')
 
+@rt('/confirm_payment_order/{order_id}')
+def post(order_id:int):
+    global account_now
+    order = OrangeIT.search_order_by_id(account_now, order_id)
+    print(order.get_status())
+    if order.get_status() == 'Wait For payment':
+        OrangeIT.change_status_order(account_now, order_id , "Wait Verify")
+        acc = OrangeIT.search_acc_by_id(account_now)
+        for i in acc.get_myorder_lst():
+            print(i)
+        print(f'update status order {order_id} to wait admin')
+        OrangeIT.clear_cart_account_by_id(account_now)
+        return Redirect('/')
+    else:
+        print('This order is already confirm!')
+        return False
+
 @rt('/view_myorder')
 def get():
     global account_now
@@ -761,7 +777,7 @@ def get():
             Div(
                 H1(f'📦 คำสั่งซื้อของฉัน ({len(orders)})', cls='order-header'),
                 Table(
-                    Tr(Th("Order ID"), Th("สินค้า"), Th("สถานะ"), Th("ที่อยู่"), Th("ยอดรวม"), Th("รายละเอียด")),
+                    Tr(Th("Order ID"), Th("สินค้า"), Th("สถานะ"), Th("ที่อยู่"), Th("ยอดรวม"),Th('ยืนยัน Order') ,Th("รายละเอียด")),
                     *[
                         Tr(
                             Td(order.get_id()),
@@ -774,6 +790,7 @@ def get():
                             Td(order.get_status(), cls="order-status"),
                             Td(order.get_address(), cls="order-address"),
                             Td(f"฿{order.get_total_amount()}", cls="order-total"),
+                            Td(Button(f"Confirm Order {order.get_id()}", cls="view-btn", hx_post=f"/confirm_payment_order/{order.get_id()}", hx_target="#order-details-container", hx_swap="innerHTML")),
                             Td(Button("🔍", cls="view-btn", hx_post=f"/order_details/{order.get_id()}", hx_target="#order-details-container", hx_swap="innerHTML"))
                         )
                         for order in orders

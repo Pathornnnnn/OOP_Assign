@@ -195,11 +195,12 @@ class Controller:
         
     def search_coupon_by_code(self ,code):
         if code == '':
-            return 0
+            return False
         else:
             for i in self.__coupon_lst:
                 if i.get_code() == code:
                     return i.get_discount()
+            return False
     
     def delete_product_by_id(self, product_id):
         print(f'delete product id : {product_id}')
@@ -285,9 +286,6 @@ class Customer(Account):
         self.__myCart_shopping = Cart([])
         self.__myOrder = []
         # self.__myReview = Review()
-
-    def get_cart_shopping(self): 
-        return self.__myCart
 
     def get_acc_email(self):
         return self.get_email_acc()

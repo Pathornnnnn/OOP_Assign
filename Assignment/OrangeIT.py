@@ -1,11 +1,20 @@
+from abc import ABC, abstractmethod
 class Controller:
-    def __init__(self, acc_lst, product_lst , admin_lst , coupon_lst=[] , review_lst=[]):
+    def __init__(self, acc_lst, product_lst , admin_lst , coupon_lst=[] , review_lst=[] , card_lst= []):
         self.__acc_lst = acc_lst
         self.__product_lst = product_lst
         self.__admin_lst = admin_lst
         self.__coupon_lst = coupon_lst
         self.__review_lst = review_lst
+        self.__card_lst = card_lst
     
+    def add_card_to_lst(self,card):
+        try:
+            self.__card_lst.append(card)
+            return True
+        except:
+            return False
+        
     def add_acc_to_lst(self,acc):
         try:
             self.__acc_lst.append(acc)
@@ -247,8 +256,21 @@ class Controller:
             return True 
         except:
             return False
-        
 
+    def check_card(self,card_number, exp, cvc):
+        for card in self.__card_lst:
+            if card.get_card_number() == card_number:
+                if card.get_exp() == exp and card.get_cvc() == cvc:
+                    return card
+        return False
+
+    def get_order_total(self, order_id , acc_id):
+        acc = self.search_acc_by_id(acc_id)
+        order_lst = acc.get_myorder_lst()
+        for order in order_lst:
+            if order.get_id() == order_id:
+                return order.get_total_amount()
+        return False
 class Account:
     id_acc = 1
     def __init__(self,name, email , password , age):
@@ -522,3 +544,49 @@ class Address:
 
     def get_addr(self):
         return f'ชื่อ : {self.__name} ที่อยู่ : {self.__addr} จังหวัด : {self.__city} {self.__post_code} เบอร์โทร : {self.__phone_number}'
+
+class Payment(ABC):
+    def __init__(self, amount):
+        self.amount = amount  # จำนวนเงิน
+    
+    @abstractmethod
+    def process_payment(self):
+        pass
+
+class CreditCardPayment(Payment):
+    def __init__(self, amount, card_number, card_holder):
+        super().__init__(amount)
+        self.card_number = card_number
+        self.card_holder = card_holder
+    
+    def process_payment(self):
+        print(f"Processing credit card payment of ${self.amount} for {self.card_holder}.")
+        return True  # สมมุติว่าชำระเงินสำเร็จ
+
+class Card:
+    def __init__(self, number, exp_date , cvc, amount):
+        self.__card_number = number
+        self.__exp_date = exp_date
+        self.__cvc = cvc
+        self.__amount = amount
+
+    def check_card(self,number, exp ,cvc):
+        if number == self.__number and cvc == self.__cvc and exp == self.__exp_date:
+            return True    
+        else:
+            return False
+    
+    def get_card_number(self):
+        return self.__card_number
+    
+    def get_exp(self):
+        return self.__exp_date
+    
+    def get_cvc(self):
+        return self.__cvc
+        
+    def get_amount(self):
+        return self.__amount
+    
+    def deduct_amount(self,amount):
+        self.__amount -= amount

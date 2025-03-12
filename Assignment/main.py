@@ -724,29 +724,53 @@ def post(full_name:str , address: str , city : str , postal_code: str , phone: s
     return Style(payment_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
         Div(
-            H2("📷 Scan to Pay"),
+            H2("💳 Enter Your Credit Card Details"),
             Div(
-                Img(src='/PIC/QR.jpg', alt='QR Code for Payment', cls='qr-code', style="width:250px; height:250px; display:block; margin:0 auto;"),
-                P("Scan the QR code above to complete your payment.", style="text-align:center; color:#666;"),
-                Button('Click to Confirm payment', hx_get = '/confirm-payment') ,
-                cls="qr-container"
+                Form(
+                    Label("Card Number:", For="card_number"),
+                    Input(id="card_number", type="text", placeholder="1234 5678 9012 3456", required=True),
+
+                    Label("Expiry Date:", For="expiry_date"),
+                    Input(id="expiry_date", type="text", placeholder="MM/YY", required=True),
+
+                    Label("CVC:", For="cvc"),
+                    Input(id="cvc", type="text", placeholder="123", required=True),
+
+                    Button('Pay Now', type="submit", hx_post='/confirm-payment', cls="pay-button"),
+                    cls="card-form"
+                ),
+                cls="payment-container"
             ),
-            cls="payment-container"
         ),
         Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="container")
     )
 
-@rt('/confirm-payment')
-def get():
-    OrangeIT.change_status_order(account_now, order_id , "Wait Verify")
-    acc = OrangeIT.search_acc_by_id(account_now)
-    for i in acc.get_myorder_lst():
-        print(i)
-    print(f'update status order {order_id} to wait admin')
-    OrangeIT.clear_cart_account_by_id(account_now)
-    return Redirect('/')
+@rt('/confirm-payment/')
+def post(card_number:str, expiry_date:str, cvc:str):
+    global account_now, order_id
+    card = OrangeIT.check_card(card_number, expiry_date, cvc)
+    print(card)
+    if not card:
+        return Div(P("❌ Card invalid", cls="error"))
+    
+    order_total = OrangeIT.get_order_total(order_id, account_now)  # ดึงยอดรวมของคำสั่งซื้อ
+    if card.get_amount() < order_total:
+        return Div(P("❌ Insufficient funds. Please use another card.", cls="error"))  # เงินไม่พอ
 
-@rt('/confirm_payment_order/{order_id}')
+    # สร้างอ็อบเจ็กต์สำหรับการชำระเงินด้วยบัตรเครดิต
+    payment = CreditCardPayment(order_total, card.get_card_number(), "Customer")
+
+    if payment.process_payment():
+        card.deduct_amount(order_total)  # หักเงินจากบัตร
+        print(f'✅ Payment successful! Order {order_id} updated to "Waiting for admin approval"')
+        OrangeIT.change_status_order(account_now,order_id,'Wait for shipping')
+        OrangeIT.clear_cart_account_by_id(account_now)  # ล้างตะกร้าสินค้า
+        return Redirect('/')
+
+    return Div(P("❌ Payment failed. Please try again.", cls="error"))  # การชำระเงินล้มเหลว
+
+
+@rt('/confirm_payment_order/')
 def post(order_id:int):
     global account_now
     order = OrangeIT.search_order_by_id(account_now, order_id)
@@ -777,7 +801,7 @@ def get():
             Div(
                 H1(f'📦 คำสั่งซื้อของฉัน ({len(orders)})', cls='order-header'),
                 Table(
-                    Tr(Th("Order ID"), Th("สินค้า"), Th("สถานะ"), Th("ที่อยู่"), Th("ยอดรวม"),Th('ยืนยัน Order') ,Th("รายละเอียด")),
+                    Tr(Th("Order ID"), Th("สินค้า"), Th("สถานะ"), Th("ที่อยู่"), Th("ยอดรวม") ,Th("รายละเอียด")),
                     *[
                         Tr(
                             Td(order.get_id()),
@@ -790,7 +814,6 @@ def get():
                             Td(order.get_status(), cls="order-status"),
                             Td(order.get_address(), cls="order-address"),
                             Td(f"฿{order.get_total_amount()}", cls="order-total"),
-                            Td(Button(f"Confirm Order {order.get_id()}", cls="view-btn", hx_post=f"/confirm_payment_order/{order.get_id()}", hx_target="#order-details-container", hx_swap="innerHTML")),
                             Td(Button("🔍", cls="view-btn", hx_post=f"/order_details/{order.get_id()}", hx_target="#order-details-container", hx_swap="innerHTML"))
                         )
                         for order in orders

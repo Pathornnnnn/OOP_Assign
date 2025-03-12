@@ -63,9 +63,13 @@ def create_instance():
     coupon_lst = []
     coupon1 = Coupon('XYZ','TOUCH',1)
     coupon_lst.append(coupon1)
-    #init System
-    OrangeIT = Controller(user_lst,product_lst,admin_lst,coupon_lst)
 
+    card_lst = []
+    card1 = Card('1111222233334444','12/25','333',50000)
+    card_lst.append(card1)
+
+    #init System
+    OrangeIT = Controller(user_lst,product_lst,admin_lst,coupon_lst,[],card_lst)
     # TEST API
     # # เพิ่มสินค้า Monitor จำนวน 2 ชิ้น ลงตะกร้าของไอดี 1 (MAX)
     # OrangeIT.add_to_cart(1,2,1)

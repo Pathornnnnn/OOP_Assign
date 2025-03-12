@@ -10,11 +10,10 @@ UPLOAD_DIR = "PIC"
 UPLOAD_DIR2 = "p/PIC"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 # PATH
-global account_now
-global tem_address
-global discount
+global account_now, discount_now, tem_address, coupon_code
 account_now = None #<----- ที่จริงต้องเก็บเป็น string
 order_id = None
+coupon_code = None
 discount = 0
 #/login
 @rt("/login")
@@ -186,8 +185,13 @@ def get():
                                 )   , href='/view_cart'
 
                             )
-                        )   
-                ),
+                        ),
+                    A(
+                                P('Coupons', cls="coupon-btn"),  
+                                cls="coupon-link" ,href='/coupons'  
+                        ),
+                    cls="header-right"   
+                    ),
                 cls="header-container"
             ),
             Div(id="results", cls="product-container", *
@@ -209,7 +213,33 @@ def get():
         )
     )
 
+@rt('/coupons')
+def get():
+    coupon_lst = OrangeIT.get_coupon_lst()
+    return Style(coupon_css), Div(
+        Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
+        
+        Div(
+            H2("🎉 รายการคูปองทั้งหมด"),
+            Table(
+                Thead(
+                    Tr(
+                        Th("รหัสคูปอง"), 
+                        Th("ชื่อ"), 
+                        Th("ส่วนลด"),
+                        Th('หมดอายุ')
+                    )
+                ),
+                Tbody(
+                    *[Tr(Td(c.get_code()), Td(c.get_name()), Td(c.get_discount()),Td(c.get_expire())) for c in coupon_lst]
+                ),
+                cls="coupon-table"
+            ),
+            cls="coupon-section"
+        ),
 
+        Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="container")
+    )
 @rt('/admin_home')
 def get():
     return Html(
@@ -449,7 +479,7 @@ def post(name : str , price: int , stock : int , product_id : int):
 #search
 @rt('/search')
 def get(name: str):
-    results = OrangeIT.search(name)
+    results = OrangeIT.search_product_by_input(name)
     if results:
         return Div(cls=("product-container"), *[Div(
             Img(src=product.get_img(), alt=product.get_name()),
@@ -483,7 +513,7 @@ def get(id: int):
                     Input(type="number", name="quantity", value="1", min="1", max=f'{product.get_stock()}'),
                     Div(
                         Form(
-                            Button("ซื้อเลย", cls="buy-btn", style='margin-right:5px', hx_post=f'/purchase/{product.get_id()}')
+                            Button("ซื้อเลย", cls="buy-btn", style='margin-right:5px;margin-bottom:10px', hx_post=f'/purchase/{product.get_id()}')
                         ),
                         Form(
                             Button("เพิ่มลงตะกร้า", cls="buy-btn", type="submit", style="background-color:gray;"),
@@ -654,43 +684,43 @@ def checkout():
     cartitems_lst = temp_acc.get_cart_shopping().get_cart_lst()
     total_price = temp_acc.get_cart_shopping().get_price_total()
 
-    return Style(checkout_css), Div(
-        Div(A(H1("ORANGE", cls="header-title"), href='/', style="color: #000; text-decoration: none; color: inherit;"), cls="header-container"),
-        Div(
-            H2("🛒 Checkout", style="color: #000;"),
-            Table(
-                Tr(Th("Product"), Th("Quantity"), Th("Price")),
-                *[Tr(Td(item.get_product().get_name()), Td(item.get_quantity()), Td(f"฿{item.get_product().get_price()}")) for item in cartitems_lst],
-                cls="checkout-table"
-            ),
-            Div(P(f"Total: ฿{total_price}", cls="total-price", id="total_prices")),  # ใช้ ID เพื่ออัปเดต
-            
-            # ฟอร์มที่อยู่ + คูปอง
-            Form(
-                H3("Shipping Address" , style="color: #000;"),
-                Div(Label("Full Name"), Input(type="text", id="full_name", required=True, placeholder="Enter your full name", cls="input-field")),
-                Div(Label("Address"), Input(type="text", id="address", required=True, placeholder="Enter your address", cls="input-field")),
-                Div(Label("City"), Input(type="text", id="city", required=True, placeholder="Enter your city", cls="input-field")),
-                Div(Label("Postal Code"), Input(type="text", id="postal_code", required=True, placeholder="Enter postal code", cls="input-field")),
-                Div(Label("Phone Number"), Input(type="tel", id="phone", required=True, placeholder="Enter phone number", cls="input-field")),
-                
-                # ✅ ปุ่มใช้คูปอง
-                Div(
-                    Label("Coupon"),
-                    Input(type="text", id="coupon", placeholder="Enter coupon code", cls="input-field"),
-                    Button("Use Code", hx_post="/use_coupon/", hx_target="#total_prices", hx_include="[name='coupon']", cls="coupon-btn")
-                ),
-                
-                Button("Proceed to Payment", cls="checkout-btn", hx_post="/payment", hx_target="body"),
-                cls="checkout-container"
-            ),
+    return Head(
+        Div(Style(checkout_css), 
+            Div(
+                A(H1("OrAnGeIT", cls="header-title"), href='/'),  # โลโก้
+                cls="header-container"
+            )
         ),
-        Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="container")
-    )
+        H2('Checkout', _class='checkout-title'),
+        Div(
+            Style(checkout_css),
+            Form(
+                H3("Shipping Address", _class="form-title"),
+                Input(Id='full_name', type='text', name='full_name', placeholder='Full Name', required=True),
+                Input(Id='address', type='text', name='address', placeholder='Address', required=True),
+                Input(Id='city', type='text', name='city', placeholder='City', required=True),
+                Input(Id='postal_code', type='text', name='postal_code', placeholder='Postal Code', required=True),
+                Input(Id='phone', type='tel', name='phone', placeholder='Phone Number', required=True),
+
+                # ✅ คูปอง
+                Input(Id='coupon', type='text', name='coupon', placeholder='Coupon Code'),
+                Button("Use Code", hx_post="/use_coupon/", hx_target="#total_prices", hx_include="[name='coupon']", _class="coupon-btn"),
+
+                P(f"Total: ฿{total_price}", Id="total_prices", _class="total-price"),  # ✅ แสดงราคาทั้งหมด
+
+                Button('Proceed to Payment', type='submit', _class='checkout-btn'),
+                action='/payment', method='post',
+                _class='checkout-form'
+            ),
+            _class='checkout-container', style="align-items: center;"
+        ),
+        Style(checkout_css)
+    ),Style(checkout_css)
+
 
 @rt('/use_coupon/')
 def apply_coupon(coupon: str):
-    global discount
+    global discount, coupon_code
     print('Code :',coupon)
     temp_acc = OrangeIT.search_acc_by_id(account_now)
     
@@ -701,30 +731,31 @@ def apply_coupon(coupon: str):
     discount = OrangeIT.search_coupon_by_code(coupon)  # ตรวจสอบคูปอง
 
     if discount != False:  
+        coupon_code = coupon
         new_total = total_price - discount  # หักส่วนลด
         return P(f"🎉 คุณได้รับส่วนลด {discount} บาท Total: ฿{new_total:.2f}", cls="total-price")
     else:
+        coupon_code = None
         return P("❌ คูปองไม่ถูกต้อง", cls="error")
 
 
 #payment    
 @rt('/payment')
 def post(full_name:str , address: str , city : str , postal_code: str , phone: str ):
-    global order_id
-    global discount
+    global order_id, discount, coupon_code
     if not account_now:
         return Div(P("account Not Found", cls="error"))
     acc = OrangeIT.search_acc_by_id(account_now)
-    for i in acc.get_myorder_lst():
-        print(i)
-    order_id = OrangeIT.creat_order_acc(account_now, full_name, address, city, postal_code ,phone , discount)
-    for i in acc.get_myorder_lst():
-        print(i)
+    # for i in acc.get_myorder_lst():
+    #     print(i)
+    order_id = OrangeIT.create_order_acc(account_now, full_name, address, city, postal_code ,phone , discount, coupon_code)
+    # for i in acc.get_myorder_lst():
+    #     print(i)
     OrangeIT.clear_cart_account_by_id(account_now)
     return Style(payment_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
         Div(
-            H2("💳 Enter Your Credit Card Details"),
+            H2("💳 Enter Your Credit Card Details",style='color:#000;'),
             Div(
                 Form(
                     Label("Card Number:", For="card_number"),
@@ -761,7 +792,7 @@ def post(card_number:str, expiry_date:str, cvc:str):
     payment = CreditCardPayment(order_total, card.get_card_number(), "Customer")
 
     if payment.process_payment():
-        card.deduct_amount(order_total)  # หักเงินจากบัตร
+        OrangeIT.deduct_amount_card(card, order_total)  # หักเงินจากบัตร
         print(f'✅ Payment successful! Order {order_id} updated to "Waiting for admin approval"')
         OrangeIT.change_status_order(account_now,order_id,'Wait for shipping')
         OrangeIT.clear_cart_account_by_id(account_now)  # ล้างตะกร้าสินค้า
@@ -769,23 +800,6 @@ def post(card_number:str, expiry_date:str, cvc:str):
 
     return Div(P("❌ Payment failed. Please try again.", cls="error"))  # การชำระเงินล้มเหลว
 
-
-@rt('/confirm_payment_order/')
-def post(order_id:int):
-    global account_now
-    order = OrangeIT.search_order_by_id(account_now, order_id)
-    print(order.get_status())
-    if order.get_status() == 'Wait For payment':
-        OrangeIT.change_status_order(account_now, order_id , "Wait Verify")
-        acc = OrangeIT.search_acc_by_id(account_now)
-        for i in acc.get_myorder_lst():
-            print(i)
-        print(f'update status order {order_id} to wait admin')
-        OrangeIT.clear_cart_account_by_id(account_now)
-        return Redirect('/')
-    else:
-        print('This order is already confirm!')
-        return False
 
 @rt('/view_myorder')
 def get():
@@ -796,34 +810,68 @@ def get():
     acc = OrangeIT.search_acc_by_id(account_now)
     orders = acc.get_myorder_lst()
     
-    
-    return  Body(
+    return Body(
+        Div(
+            H1(f'📦 คำสั่งซื้อของฉัน ({len(orders)})', cls='order-header'),
+            Table(
+                Tr(Th("Order ID"), Th("สินค้า"), Th("สถานะ"), Th("ที่อยู่"), Th("ยอดรวม"), Th("รายละเอียด"), Th("ชำระเงิน")),
+                *[
+                    Tr(
+                        Td(order.get_id()),
+                        Td(Ul(*[Li(item.get_product().get_name()) for item in order.get_list()]), cls="order-items"),
+                        Td(order.get_status(), cls="order-status"),
+                        Td(order.get_address(), cls="order-address"),
+                        Td(f"฿{order.get_total_amount()}", cls="order-total"),
+                        Td(Button("🔍", cls="view-btn", hx_post=f"/order_details/{order.get_id()}", hx_target="#order-details-container", hx_swap="innerHTML")),
+                        
+                        # ✅ ส่งฟอร์มไปที่ /re_payment_order แทน /view_myorder
+                        Td(
+                            Form(
+                                Input(type="hidden", name="order", value=order.get_id()),  # ส่งค่า order_id
+                                Button("💳 Pay", type="submit", cls="pay-btn"),
+                                action='/re_payment_order/',
+                                method="post"
+                            )
+                        ) if order.get_status() == 'Wait For payment' else Td("")
+                    ) 
+                    for order in orders
+                ],
+                cls="order-table"
+            ),
+            Div(id="order-details-container", cls="order-details-container"),
+            id="orders"
+        ),
+        Style(view_order)
+    )
+
+
+@rt('/re_payment_order/')
+def post(order:int):
+    global account_now, order_id
+    order_id = order
+    return Style(payment_css), Div(
+        Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
+        Div(
+            H2("💳 Enter Your Credit Card Details",style='color:#000;'),
             Div(
-                H1(f'📦 คำสั่งซื้อของฉัน ({len(orders)})', cls='order-header'),
-                Table(
-                    Tr(Th("Order ID"), Th("สินค้า"), Th("สถานะ"), Th("ที่อยู่"), Th("ยอดรวม") ,Th("รายละเอียด")),
-                    *[
-                        Tr(
-                            Td(order.get_id()),
-                            Td(
-                                Ul(
-                                    *[Li(item.get_product().get_name()) for item in order.get_list()]
-                                ),
-                                cls="order-items"
-                            ),
-                            Td(order.get_status(), cls="order-status"),
-                            Td(order.get_address(), cls="order-address"),
-                            Td(f"฿{order.get_total_amount()}", cls="order-total"),
-                            Td(Button("🔍", cls="view-btn", hx_post=f"/order_details/{order.get_id()}", hx_target="#order-details-container", hx_swap="innerHTML"))
-                        )
-                        for order in orders
-                    ],
-                    cls="order-table"
+                Form(
+                    Label("Card Number:", For="card_number"),
+                    Input(id="card_number", type="text", placeholder="1234 5678 9012 3456", required=True),
+
+                    Label("Expiry Date:", For="expiry_date"),
+                    Input(id="expiry_date", type="text", placeholder="MM/YY", required=True),
+
+                    Label("CVC:", For="cvc"),
+                    Input(id="cvc", type="text", placeholder="123", required=True),
+
+                    Button('Pay Now', type="submit", hx_post='/confirm-payment', cls="pay-button"),
+                    cls="card-form"
                 ),
-                Div(id="order-details-container", cls="order-details-container"),
-                id="orders"
-            ),Style(view_order)
-        )
+                cls="payment-container"
+            ),
+        ),
+        Div(P("© 2025 OrAnGe Store | All Rights Reserved.", cls="footer"), cls="container")
+    )
 
 @rt('/order_details/{order_id}')
 def post(order_id: int):

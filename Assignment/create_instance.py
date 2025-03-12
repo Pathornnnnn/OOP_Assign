@@ -61,8 +61,10 @@ def create_instance():
     product_lst.append(product21)
 
     coupon_lst = []
-    coupon1 = Coupon('XYZ','TOUCH',1)
+    coupon1 = Coupon('XYZ','FREE1',1)
+    coupon2 = Coupon('CEDT','DIS99',99)
     coupon_lst.append(coupon1)
+    coupon_lst.append(coupon2)
 
     card_lst = []
     card1 = Card('1111222233334444','12/25','333',50000)

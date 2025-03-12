@@ -196,6 +196,94 @@ home_css =''' """
                     border-top: 1px solid #ddd;
                     margin-top: auto; /* ดัน footer ไปอยู่ล่าง */
                 }
+
+                                /* ปรับ container ของปุ่มให้อยู่ชิดขวา */
+                .header-right {
+                    display: flex;
+                    gap: 15px; /* ระยะห่างระหว่าง Cart กับ Coupons */
+                    align-items: center;
+                }
+
+                /* ปรับปุ่ม Coupons */
+                .coupon {
+                    display: flex;
+                    align-items: center;
+                    cursor: pointer;
+                    background-color: #FF5500;
+                    padding: 5px 10px;
+                    border-radius: 6px;
+                    transition: 0.3s;
+                }
+
+                .coupon:hover {
+                    background-color: #E04400;
+                }
+
+                .coupon-btn {
+                    color: white;
+                    font-size: 14px;
+                    margin-left: 6px;
+                }
+
+                .icon.coupon {
+                    width: 20px;
+                    height: 20px;
+                }
+                .coupon-btn {
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #FF6600, #FF3300);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+.coupon-btn:hover {
+    background: linear-gradient(135deg, #FF5500, #FF2200);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.coupon-btn {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 8px 12px;  /* ลด padding ให้พอดี */
+    border: none;
+    border-radius: 6px;
+    background: linear-gradient(135deg, #FF6600, #FF3300);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+    display: inline-flex; /* ทำให้ปุ่มพอดีกับข้อความ */
+    align-items: center;
+    justify-content: center;
+    min-width: auto; /* ป้องกันปุ่มกว้างเกินไป */
+}
+
+.coupon-btn:hover {
+    background: linear-gradient(135deg, #FF5500, #FF2200);
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+.coupon-container {
+    display: inline-block; /* หรือใช้ inline-flex */
+    margin: 0;
+    padding: 0;
+}
+.coupon-link {
+    display: inline-block; /* ปรับให้ a มีขนาดพอดีกับเนื้อหา */
+    padding: 0; /* ตัด padding ที่อาจทำให้ใหญ่เกิน */
+    margin: 0; /* ป้องกัน margin เกิน */
+    text-decoration: none; /* เอาขีดเส้นใต้ลิงก์ออก */
+}
+
+
+
                 
 
                             """ 
@@ -655,287 +743,402 @@ input[type="number"] {
 '''
 
 checkout_css = '''
-                   body {
-    font-family: Arial, sans-serif;
-    background-color: #f8f9fa;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
 
-.container {
-    width: 50%;
-    padding: 20px;
-    background: white;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    margin-top: 50px;
-    border-radius: 10px;
-}
+                :root {
+                    --pico-text-decoration: none;
+                }
 
-.header-title {
-    text-align: center;
-    font-size: 24px;
-    font-weight: bold;
-    color: #2c3e50;
-}
-
-.checkout-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-size: 16px;
-}
-
-.checkout-table th, .checkout-table td {
-    padding: 12px;
-    text-align: center;
-    border: 1px solid #ddd;
-}
-
-.checkout-table th {
-    background-color: #f39c12;
-    color: white;
-}
-
-.total-price {
-    font-size: 20px;
-    font-weight: bold;
-    color: #e67e22;
-    text-align: right;
-    margin-top: 10px;
-}
-
-/* ปรับสี label และ h3 เป็นสีดำ */
-.checkout-container label {
-    font-weight: bold;
-    display: block;
-    margin-top: 10px;
-    color: #000; /* เปลี่ยนเป็นสีดำ */
-}
-
-h3 {
-    color: #000; /* เปลี่ยนเป็นสีดำ */
-}
-h2 {
-    color: #000; /* เปลี่ยนเป็นสีดำ */
-}
-
-.input-field {
-    width: 100%;
-    padding: 12px;
-    margin: 5px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    background-color: #f8f9fa;
-    color: #333;
-}
-
-.input-field:focus {
-    border-color: #f39c12;
-    outline: none;
-    box-shadow: 0px 0px 5px rgba(243, 156, 18, 0.5);
-}
-
-.coupon-btn, .checkout-btn {
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    text-align: center;
-    margin-top: 15px;
-}
-
-.coupon-btn {
-    background-color: #3498db;
-    color: white;
-}
-
-.coupon-btn:hover {
-    background-color: #2980b9;
-}
-
-.checkout-btn {
-    background-color: #f39c12;
-    color: white;
-}
-
-.checkout-btn:hover {
-    background-color: #e67e22;
-}
-
-.footer {
-    text-align: center;
-    margin-top: 20px;
-    color: #7f8c8d;
-    font-size: 14px;
-}
-
-'''
-
-payment_css = '''
-                """
-                    body {
-                        background-color: #ffffff;
-                        color: black;
-                        margin: 0;
-                        padding: 0;
-                        min-height: 100vh;
-                        display: flex;
-                        flex-direction: column;
-                        align-items: center;
-                    }
-                    
-                    .container {
-                        width: 100%;
-                        max-width: 800px;
-                        background: white;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        text-align: center;
-                        margin-top: 50px;
-                    }
-
-                    .payment-title {
-                        font-size: 24px;
-                        font-weight: bold;
-                        color: #f39c12;
-                        margin-bottom: 20px;
-                    }
-
-                    .payment-form {
-                        display: flex;
-                        flex-direction: column;
-                        gap: 15px;
-                    }
-
-                    .payment-form label {
-                        font-size: 16px;
-                        font-weight: bold;
-                        text-align: left;
-                        color: #555;
-                    }
-
-                    .payment-form input, .payment-form select {
-                        width: 100%;
-                        padding: 10px;
-                        font-size: 16px;
-                        border: 1px solid #ccc;
-                        border-radius: 5px;
-                        box-sizing: border-box;
-                        background-color: #f8f9fa;
-                        color: #333;
-                    }
-
-                    .payment-form input::placeholder {
-                        color: #888;
-                    }
-
-                    .payment-btn {
-                        background-color: #f39c12;
-                        color: white;
-                        padding: 12px;
-                        border: none;
-                        border-radius: 5px;
-                        cursor: pointer;
-                        font-size: 18px;
-                        transition: background 0.3s ease-in-out;
-                    }
-
-                    .payment-btn:hover {
-                        background-color: #e67e22;
-                    }
-
-                    .footer {
-                        background-color: #ffffff;
-                        color: black;
-                        text-align: center;
-                        padding: 15px 20px;
-                        font-size: 14px;
-                        border-top: 1px solid #ddd;
-                        margin-top: auto;
-                    }
-
-                    .checkout-container label {
-                        font-weight: bold;
-                        display: block;
-                        margin-top: 10px;
-                        color: #000; /* เปลี่ยนเป็นสีดำ */
-                    }
-    
-                    h3, h2, p {
-                        color: #000; /* เปลี่ยนเป็นสีดำ */
-                    }
-
-                    .footer {
-                        text-align: center;
-                        margin-top: 20px;
-                        color: #000; /* เปลี่ยนเป็นสีดำ */
-                        font-size: 14px;
-                    }
-
-                    """
-'''
-
-payment_css = '''
-body {
-    background-color: #f8f9fa;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
+                a, .login a, .cart a {
+                    text-decoration: none !important;
+                    border-bottom: none !important;
+                    box-shadow: none !important;
+                    outline: none !important;
+                }
+                   /* ✅ Checkout Container */
+.checkout-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-family: Arial, sans-serif;
-}
-
-.container {
     width: 100%;
-    max-width: 600px;
-    background: white;
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
     margin-top: 20px;
 }
 
+/* ✅ Checkout Form */
+.checkout-form {
+    background: #fff;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 90%;
+    max-width: 400px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ✅ Form Title */
+.form-title {
+    font-size: 22px;
+    font-weight: bold;
+    text-align: center;
+    color: #333;
+}
+
+/* ✅ Input Fields */
+.checkout-form input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: 0.3s;
+}
+
+.checkout-form input:focus {
+    border-color: #ff6a00;
+    box-shadow: 0 0 5px rgba(255, 106, 0, 0.3);
+    outline: none;
+}
+
+/* ✅ Total Price */
+.total-price {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    color: #ff6a00;
+}
+
+/* ✅ Buttons */
+.checkout-btn, .coupon-btn {
+    width: 100%;
+    padding: 12px;
+    background: #ff6a00;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.checkout-btn:hover, .coupon-btn:hover {
+    background: #e55b00;
+}
+/* ✅ ตั้งค่าพื้นหลังขาวสะอาด */
+body {
+    background-color: #fff;
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ✅ โลโก้ OrangeIT */
 .header-title {
     font-size: 28px;
     font-weight: bold;
-    color: #ff7f50;
-    text-decoration: none;
+    text-align: center;
+    color: #ff6a00; /* สีส้มเด่น */
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 20px;
 }
 
+/* ✅ Checkout Title */
+.checkout-title {
+    font-size: 26px;
+    font-weight: bold;
+    text-align: center;
+    color: #333; /* สีดำเทา */
+    margin-top: 15px;
+}
+/* ✅ ปุ่ม Coupon เป็นสีน้ำเงิน */
+.coupon-btn {
+    background-color: #007bff; /* 🔵 สีน้ำเงินสด */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+/* ✅ Hover Effect: เปลี่ยนเป็นน้ำเงินเข้ม */
+.coupon-btn:hover {
+    background-color: #0056b3;
+}
+/* ✅ ปรับพื้นหลังช่องรับค่าเป็นสีขาว */
+.input-field {
+    background-color: white;  /* ⚪ พื้นหลังสีขาว */
+    color: #333;              /* 🔘 สีตัวอักษรเข้มขึ้น */
+    font-size: 16px;
+    padding: 10px;
+    border: 1px solid #ccc;  /* 🔲 เส้นขอบสีเทา */
+    border-radius: 5px;
+    width: 100%;
+    box-sizing: border-box; /* ✅ ป้องกันขยายเกินขอบ */
+}
+
+/* ✅ เมื่อกดที่ช่องให้มีขอบสีฟ้า */
+.input-field:focus {
+    border-color: #007bff;  /* 🔵 เปลี่ยนเป็นขอบน้ำเงิน */
+    outline: none;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* ✨ เพิ่มเงาฟ้า */
+}
+
+'''
+
+# payment_css = '''
+#                 """
+#                 :root {
+#                     --pico-text-decoration: none;
+#                 }
+#                     body {
+#                         background-color: #ffffff;
+#                         color: black;
+#                         margin: 0;
+#                         padding: 0;
+#                         min-height: 100vh;
+#                         display: flex;
+#                         flex-direction: column;
+#                         align-items: center;
+#                     }
+                    
+#                     .container {
+#                         width: 100%;
+#                         max-width: 800px;
+#                         background: white;
+#                         padding: 20px;
+#                         border-radius: 10px;
+#                         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+#                         text-align: center;
+#                         margin-top: 50px;
+#                     }
+
+#                     .payment-title {
+#                         font-size: 24px;
+#                         font-weight: bold;
+#                         color: #f39c12;
+#                         margin-bottom: 20px;
+#                     }
+
+#                     .payment-form {
+#                         display: flex;
+#                         flex-direction: column;
+#                         gap: 15px;
+#                     }
+
+#                     .payment-form label {
+#                         font-size: 16px;
+#                         font-weight: bold;
+#                         text-align: left;
+#                         color: #555;
+#                     }
+
+#                     .payment-form input, .payment-form select {
+#                         width: 100%;
+#                         padding: 10px;
+#                         font-size: 16px;
+#                         border: 1px solid #ccc;
+#                         border-radius: 5px;
+#                         box-sizing: border-box;
+#                         background-color: #f8f9fa;
+#                         color: #333;
+#                     }
+
+#                     .payment-form input::placeholder {
+#                         color: #888;
+#                     }
+
+#                     .payment-btn {
+#                         background-color: #f39c12;
+#                         color: white;
+#                         padding: 12px;
+#                         border: none;
+#                         border-radius: 5px;
+#                         cursor: pointer;
+#                         font-size: 18px;
+#                         transition: background 0.3s ease-in-out;
+#                     }
+
+#                     .payment-btn:hover {
+#                         background-color: #e67e22;
+#                     }
+
+#                     .footer {
+#                         background-color: #ffffff;
+#                         color: black;
+#                         text-align: center;
+#                         padding: 15px 20px;
+#                         font-size: 14px;
+#                         border-top: 1px solid #ddd;
+#                         margin-top: auto;
+#                     }
+
+#                     .checkout-container label {
+#                         font-weight: bold;
+#                         display: block;
+#                         margin-top: 10px;
+#                         color: #000; /* เปลี่ยนเป็นสีดำ */
+#                     }
+    
+#                     h3, h2, p {
+#                         color: #000; /* เปลี่ยนเป็นสีดำ */
+#                     }
+
+#                     .footer {
+#                         text-align: center;
+#                         margin-top: 20px;
+#                         color: #000; /* เปลี่ยนเป็นสีดำ */
+#                         font-size: 14px;
+#                     }
+
+#                     """
+# '''
+
+payment_css = '''
+:root {
+                    --pico-text-decoration: none;
+                }
+
+                a {
+                    text-decoration: none !important;
+                    border-bottom: none !important;
+                    box-shadow: none !important;
+                    outline: none !important;
+                }
+                body{
+                background-color:#fff;}
+
+/* ทำให้ Container อยู่ตรงกลางและดูสะอาด */
 .payment-container {
+    max-width: 400px;
+    margin: 50px auto;
     padding: 20px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.15);
+    text-align: center;
+    color: #000;
 }
 
-.qr-container {
+/* หัวข้อหลักของหน้า */
+.header-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #FF6600;
+    text-align: center;
+}
+
+/* แบบฟอร์มบัตรเครดิต */
+.card-form {
     display: flex;
     flex-direction: column;
-    align-items: center;
-}
-
-.qr-code {
-    border-radius: 10px;
+    gap: 15px;
+    text-align: left;
     padding: 10px;
-    background: white;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.card-form label {
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.card-form input {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.card-form input:focus {
+    border-color: #FF6600;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(255, 102, 0, 0.5);
+}
+
+/* ปุ่มชำระเงิน */
+.pay-button {
+    background: #FF6600;
+    color: white;
+    font-size: 18px;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.pay-button:hover {
+    background: #E65C00;
+}
+
+/* Footer */
 .footer {
     margin-top: 20px;
     font-size: 14px;
-    color: #888;
+    color: #777;
+    text-align: center;
 }
+
+/* ปรับสีตัวอักษรให้เข้มขึ้น */
+.header-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #FF6600;
+    text-align: center;
+}
+
+/* ทำให้ข้อความหัวข้อดูเข้มขึ้นและไม่มีเส้นใต้ */
+h2 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #000;
+    text-align: center;
+    text-decoration: none; /* เอาเส้นใต้ออก */
+}
+
+/* ปรับสไตล์ของ Input ให้ดูเรียบขึ้น */
+.card-form input {
+    background-color: #fff; /* เปลี่ยนพื้นหลังเป็นสีขาว */
+    color: #333; /* เปลี่ยนฟอนต์ให้เป็นสีเข้ม */
+    border: 2px solid #ddd; /* กำหนดขอบให้ดูสะอาด */
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+    transition: all 0.3s ease-in-out;
+}
+
+.card-form input:focus {
+    border-color: #FF6600;
+    outline: none;
+    box-shadow: 0px 0px 5px rgba(255, 102, 0, 0.5);
+}
+
+/* ปรับให้ปุ่มดูเด่นขึ้น */
+.pay-button {
+    background: #FF6600;
+    color: white;
+    font-size: 18px;
+    font-weight: bold; /* ทำให้ตัวอักษรหนาขึ้น */
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.pay-button:hover {
+    background: #E65C00;
+}
+
+
 '''
 view_cart_css = '''
                     .cart-header {
@@ -1397,6 +1600,85 @@ edit_product_css = '''
                     .save-btn:hover {
                         background-color: #218838;
                     }
+
+
+
+'''
+
+coupon_css = '''/* ปรับพื้นหลังให้อ่อนขึ้น */
+:root {
+                    --pico-text-decoration: none;
+                }
+
+                a {
+                    text-decoration: none !important;
+                    border-bottom: none !important;
+                    box-shadow: none !important;
+                    outline: none !important;
+                }
+/* พื้นหลังสีเข้มขึ้น */
+body {
+    background-color: #eeeeee;
+    font-family: Arial, sans-serif;
+}
+
+/* หัวข้อหลัก */
+.header-title {
+    font-size: 28px;
+    font-weight: bold;
+    color: #FF5500;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* กล่องคูปอง */
+.coupon-section {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
+    background: #1a1a1a;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ตารางคูปอง */
+.coupon-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    background: #222;
+    color: #fff;
+}
+
+/* หัวตาราง */
+.coupon-table th {
+    background-color: #FF5500;
+    color: white;
+    padding: 14px;
+    font-size: 16px;
+}
+
+/* แถวข้อมูล */
+.coupon-table td {
+    padding: 12px;
+    border-bottom: 1px solid #444;
+}
+
+/* สลับสีแถว */
+.coupon-table tr:nth-child(even) {
+    background-color: #333;
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    font-size: 14px;
+    color: #000;
+    margin-top: 20px;
+}
 
 
 

@@ -8,6 +8,9 @@ class Controller:
         self.__review_lst = review_lst
         self.__card_lst = card_lst
     
+    def add_product(self, product):
+        self.__product_lst.append(product)
+
     def add_card_to_lst(self,card):
         try:
             self.__card_lst.append(card)
@@ -22,6 +25,34 @@ class Controller:
         except:
             return False
 
+    def add_to_cart(self, product_id , quantity, acc_id):
+        product = self.search_product_by_id(product_id)
+        stock_product = product.get_stock()
+        acc = self.search_acc_by_id(acc_id)
+        print(product,stock_product,acc)
+        if stock_product >= quantity:
+            for i in acc.get_cart_shopping().get_cart_lst():
+                if product.get_name() == i.get_product().get_name():
+                    i.add_quantity(quantity)
+                    product.down_stock(quantity)
+                    print('add to cart exist item')
+                    return True
+            itemm = Cartitem(product,quantity)
+            acc.Add_to_cart_shopping(itemm)
+            product.down_stock(quantity)
+            print('add to cart new item')
+            return True
+
+        else:
+            return False
+        
+    def add_review(self , acc_id , product_id , rating , comment ):
+        acc = self.search_acc_by_id(acc_id)
+        product = self.search_product_by_id(product_id)
+        review_ins = Review(acc, product, rating, comment)
+        self.__review_lst.append(review_ins)
+        return True
+    
     def search_acc_by_id(self,acc_id):
         for i in self.__acc_lst:
             if i.get_acc_id() == acc_id:
@@ -59,59 +90,68 @@ class Controller:
         for i in self.__product_lst:
             if name == i.get_name():
                 return i
-            
-    def get_acc_lst(self):
-        return self.__acc_lst
     
-    def get_product_lst(self):
-        return self.__product_lst
-
-    def add_to_cart(self, product_id , quantity, acc_id):
-        product = self.search_product_by_id(product_id)
-        stock_product = product.get_stock()
-        acc = self.search_acc_by_id(acc_id)
-        print(product,stock_product,acc)
-        if stock_product >= quantity:
-            for i in acc.get_cart_shopping().get_cart_lst():
-                if product.get_name() == i.get_product().get_name():
-                    i.add_quantity(quantity)
-                    product.down_stock(quantity)
-                    print('add to cart exist item')
-                    return True
-            itemm = Cartitem(product,quantity)
-            acc.Add_to_cart_shopping(itemm)
-            product.down_stock(quantity)
-            print('add to cart new item')
-            return True
-
-        else:
-            return False
-
-    def get_lst_product(self):
-        return self.__product_lst
-    
-    def search(self, name):
+    def search_product_by_input(self, name):
         result = []
         for product in self.__product_lst:
             if name.lower() in product.get_name().lower():
                 result.append(product)
         return result
     
-    def check_login(self, email, password):
-        acc = self.search_acc_by_email(email)
-        print(acc)
-        if isinstance(acc,Customer):
-            if acc.get_acc_email() == email and acc.get_password() == password:
-                return acc
-            else:
-                return None
+    def search_order_by_id(self, account , order_id):
+        acc = self.search_acc_by_id(account)
+        myorder = acc.get_myorder_lst()
+        for i in myorder:
+            if i.get_id() == order_id:
+                return i
             
-        if isinstance(acc,Admin):
-            if acc.get_admin_email() == email and acc.get_password() == password:
-                return acc
-            else:
-                return None
-        return None  # ไม่ตรงกัน
+    def search_coupon_by_code(self ,code):
+        if code == '':
+            return False
+        else:
+            for i in self.__coupon_lst:
+                if i.get_code() == code:
+                    return i.get_discount()
+            return False
+
+    def get_coupon_lst(self):
+        return self.__coupon_lst
+       
+    def get_acc_lst(self):
+        return self.__acc_lst
+    
+    def get_product_lst(self):
+        return self.__product_lst
+
+    def get_lst_product(self):
+        return self.__product_lst
+    
+    def get_pending_orders(self):
+        pending_lst = []
+        for i in self.__acc_lst:
+            for j in i.get_myorder_lst():
+                if j.get_status() == 'Wait Verify':
+                    pending_lst.append(j)
+
+        return pending_lst
+    
+    def get_order_total(self, order_id , acc_id):
+        acc = self.search_acc_by_id(acc_id)
+        order_lst = acc.get_myorder_lst()
+        for order in order_lst:
+            if order.get_id() == order_id:
+                return order.get_total_amount()
+        return False
+    
+    def get_reviews_by_product_id(self, product_id):
+        review_lst = []
+        product = self.search_product_by_id(product_id)
+        name_product = product.get_name()
+        for review in self.__review_lst:
+            if name_product == review.get_product_name():
+                review_lst.append(review)
+        print(review_lst)
+        return review_lst      
     
     def update_cart_quantity(self , account , cartitem_id , quantity):
         acc = self.search_acc_by_id(account)
@@ -129,23 +169,24 @@ class Controller:
                     return False
         return False
 
-    def remove_cartitem_by_id(self , account , cartitem_id):
-        acc = self.search_acc_by_id(account)
-        cart = acc.get_cart_shopping()
-        cart.remove_cartitem(cartitem_id)
-        print('Remove Success')
+    def update_product(self,product_id, name, price, stock):
+        try:
+            print(f'Update id {product_id}')
+            product = self.search_product_by_id(product_id)
+            product.update_product(name, price, stock)
+        except:
+            return False
 
-    def creat_order_acc(self, account , name , addr , city , post , phone , discount):
+    def create_order_acc(self, account , name , addr , city , post , phone , discount , coupon):
         acc = self.search_acc_by_id(account)
         cart = acc.get_cart_shopping()
         cart_lst = acc.get_cart_shopping().get_cart_lst()
         address = Address(name, addr, city , post, phone)
         cart_price = cart.get_price_total()
         total = cart_price-discount
-        print(cart_price, total)
-        my_order = Order(cart_lst , address , 'Wait For payment' ,total )
+        my_order = Order(cart_lst , address , 'Wait For payment' ,total , coupon)
         acc.add_myorder(my_order)
-        print('add myorder')
+        print('add myorder success')
         return my_order.get_id()
     
     def change_status_order(self, account , order_id , message):
@@ -179,38 +220,6 @@ class Controller:
         cart.clear_cart()
         return True
     
-    def search_order_by_id(self, account , order_id):
-        acc = self.search_acc_by_id(account)
-        myorder = acc.get_myorder_lst()
-        for i in myorder:
-            if i.get_id() == order_id:
-                return i
-            
-    def get_pending_orders(self):
-        pending_lst = []
-        for i in self.__acc_lst:
-            for j in i.get_myorder_lst():
-                if j.get_status() == 'Wait Verify':
-                    pending_lst.append(j)
-
-        return pending_lst
-
-    def verify_admin(self, account_id):
-        acc = self.search_acc_by_id(account_id)
-        if isinstance(acc,Admin):
-            return True
-        else:
-            return False
-        
-    def search_coupon_by_code(self ,code):
-        if code == '':
-            return False
-        else:
-            for i in self.__coupon_lst:
-                if i.get_code() == code:
-                    return i.get_discount()
-            return False
-    
     def delete_product_by_id(self, product_id):
         print(f'delete product id : {product_id}')
         try:
@@ -220,33 +229,21 @@ class Controller:
         except:
             return False
         
-    def update_product(self,product_id, name, price, stock):
-        try:
-            print(f'Update id {product_id}')
-            product = self.search_product_by_id(product_id)
-            product.update_product(name, price, stock)
-        except:
-            return False
-    
-    def add_product(self, product):
-        self.__product_lst.append(product)
-
-    def get_reviews_by_product_id(self, product_id):
-        review_lst = []
-        product = self.search_product_by_id(product_id)
-        name_product = product.get_name()
-        for review in self.__review_lst:
-            if name_product == review.get_product_name():
-                review_lst.append(review)
-        print(review_lst)
-        return review_lst      
-    
-    def add_review(self , acc_id , product_id , rating , comment ):
-        acc = self.search_acc_by_id(acc_id)
-        product = self.search_product_by_id(product_id)
-        review_ins = Review(acc, product, rating, comment)
-        self.__review_lst.append(review_ins)
-        return True
+    def check_login(self, email, password):
+        acc = self.search_acc_by_email(email)
+        print(acc)
+        if isinstance(acc,Customer):
+            if acc.get_acc_email() == email and acc.get_password() == password:
+                return acc
+            else:
+                return None
+            
+        if isinstance(acc,Admin):
+            if acc.get_admin_email() == email and acc.get_password() == password:
+                return acc
+            else:
+                return None
+        return None  # ไม่ตรงกัน
     
     def register(self, name , email , password , age):
         new_acc = Customer(name , email , password , age)
@@ -257,6 +254,13 @@ class Controller:
         except:
             return False
 
+    def verify_admin(self, account_id):
+        acc = self.search_acc_by_id(account_id)
+        if isinstance(acc,Admin):
+            return True
+        else:
+            return False
+        
     def check_card(self,card_number, exp, cvc):
         for card in self.__card_lst:
             if card.get_card_number() == card_number:
@@ -264,13 +268,15 @@ class Controller:
                     return card
         return False
 
-    def get_order_total(self, order_id , acc_id):
-        acc = self.search_acc_by_id(acc_id)
-        order_lst = acc.get_myorder_lst()
-        for order in order_lst:
-            if order.get_id() == order_id:
-                return order.get_total_amount()
-        return False
+    def deduct_amount_card(self, card, total_amount):
+        card.deduct_amount(total_amount)
+        
+    def remove_cartitem_by_id(self , account , cartitem_id):
+        acc = self.search_acc_by_id(account)
+        cart = acc.get_cart_shopping()
+        cart.remove_cartitem(cartitem_id)
+        print('Remove Success')
+
 class Account:
     id_acc = 1
     def __init__(self,name, email , password , age):
@@ -477,14 +483,18 @@ class Coupon:
     def get_discount(self):
         return self.__discount
 
+    def get_expire(self):
+        return self.__expire
+    
 class Order:
     order_id = 1
-    def __init__(self, Cartitem_lst, Address, Status, TotalAmount):
+    def __init__(self, Cartitem_lst, Address, Status, TotalAmount, coupon=''):
         self.__id = Order.order_id
         self.__list = Cartitem_lst
         self.__address = Address
         self.__Status = Status
         self.__TotalAmount = TotalAmount
+        self.__coupon = coupon
         Order.order_id += 1
     
     def get_id(self):

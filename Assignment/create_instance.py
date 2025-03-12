@@ -54,7 +54,7 @@ def create_instance():
     product_lst.append(product14)
     product_lst.append(product15)
     product_lst.append(product16)
-    product_lst.append(product18)
+    product_lst.append(product17)
     product_lst.append(product18)
     product_lst.append(product19)
     product_lst.append(product20)

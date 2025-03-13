@@ -22,3 +22,12 @@
 
 7. run command :
     python -m uvicorn app:app --reload
+
+OR 
+
+Dowload Zip file (branch master)
+
+1. Download and extract file
+2. Open folder Assignment by vscode
+3. check path by file in folder have app.py ? (use command : ls , dir) if have app.py is correct
+4. use command : python -m uvicorn app:app --reload

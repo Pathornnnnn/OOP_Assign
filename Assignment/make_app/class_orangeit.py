@@ -29,7 +29,7 @@ class Controller:
         product = self.search_product_by_id(product_id)
         stock_product = product.get_stock()
         acc = self.search_acc_by_id(acc_id)
-        if stock_product >= quantity:
+        if int(stock_product) >= quantity:
             for i in acc.get_cart_shopping().get_cart_lst():
                 if product.get_name() == i.get_product().get_name():
                     i.add_quantity(quantity)
@@ -382,7 +382,7 @@ class Cart:
     def get_price_total(self):
         total = 0
         for i in self.__Cartitem_lst:
-            total += i.get_product().get_price() * i.get_quantity()
+            total += int(i.get_product().get_price()) * int(i.get_quantity())
         return total
     
     def search_cartitem_by_id(self, cartitem_id):
@@ -482,6 +482,9 @@ class Order:
     
     def get_total_amount(self):
         return self.__TotalAmount
+    
+    def get_coupon(self):
+        return self.__coupon
     
     def update_status(self, massage):
         self.__Status = massage

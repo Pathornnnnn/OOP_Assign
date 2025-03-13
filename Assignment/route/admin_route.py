@@ -1,6 +1,7 @@
 from app import *
 from make_app.css import*
 import config
+import shutil
 @rt('/admin_home')
 def get():
     return Html(
@@ -198,37 +199,38 @@ def get():
 
 @rt('/add_product')
 def post(name: str, price: str, description:str ,quantity:str ,img: UploadFile):
-    try:
+    print('post')
+    #try:
         # Ensure the directories exist
-        if not os.path.exists(UPLOAD_DIR):
-            os.makedirs(UPLOAD_DIR)
-        if not os.path.exists(UPLOAD_DIR2):
-            os.makedirs(UPLOAD_DIR2)
-        
-        # Save the file to the first path (UPLOAD_DIR)
-        file_path = os.path.join(UPLOAD_DIR, img.filename)
-        with open(file_path, "wb") as f:
-            f.write(img.file.read())
-
-        # Save the file to the second path (UPLOAD_DIR2)
-        file_path2 = os.path.join(UPLOAD_DIR2, img.filename)
-        shutil.copy(file_path, file_path2)
-        
-        # Create the product and add it
-        relative_path = f"{UPLOAD_DIR}/{img.filename}"
-        product = Product(name, price, description, description, relative_path)
-        OrangeIT.add_product(product)
-
-        # Return the HTML div structure with the product details
-        return Div(
-            Img(src=product.get_img(), alt=product.get_name()),
-            H3(product.get_name()),
-            P(f"Price : {product.get_price()} THB"),
-            cls="product-card"
-        )
+    if not os.path.exists(config.UPLOAD_DIR):
+        os.makedirs(config.UPLOAD_DIR)
+    if not os.path.exists(config.UPLOAD_DIR2):
+        os.makedirs(config.UPLOAD_DIR2)
     
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    # Save the file to the first path (UPLOAD_DIR)
+    file_path = os.path.join(config.UPLOAD_DIR, img.filename)
+    with open(file_path, "wb") as f:
+        f.write(img.file.read())
+
+    # Save the file to the second path (UPLOAD_DIR2)
+    file_path2 = os.path.join(config.UPLOAD_DIR2, img.filename)
+    shutil.copy(file_path, file_path2)
+    
+    # Create the product and add it
+    relative_path = f"{config.UPLOAD_DIR}/{img.filename}"
+    product = Product(name, price, description, int(quantity), relative_path)
+    OrangeIT.add_product(product)
+
+    # Return the HTML div structure with the product details
+    return Div(
+        Img(src=product.get_img(), alt=product.get_name()),
+        H3(product.get_name()),
+        P(f"Price : {product.get_price()} THB"),
+        cls="product-card"
+    )
+    
+   #except Exception as e:
+        #raise HTTPException(status_code=500, detail=str(e))
 
 
 @rt('/update_product')

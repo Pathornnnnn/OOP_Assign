@@ -301,9 +301,10 @@ def post(order_id: int):
         P(f"สถานะ: {order.get_status()}", cls="order-status"),
         P(f"ที่อยู่จัดส่ง: {order.get_address()}", cls="order-address"),
         P(f"ยอดรวม: ฿{order.get_total_amount()}", cls="order-total"),
+        P(f"คูปอง : {order.get_coupon()} ลดทั้งหมด : {OrangeIT.search_coupon_by_code(order.get_coupon())}", cls="order-total"),
         H3("รายการสินค้า", cls="order-items-header"),
         Ul(
-            *[Li(f"{item.get_product().get_name()} - {item.get_quantity()} ชิ้น (฿{item.get_price_product() * item.get_quantity()})") for item in order.get_list()]
+            *[Li(f"{item.get_product().get_name()} : {item.get_quantity()} ชิ้น (฿{item.get_price_product() * item.get_quantity()})") for item in order.get_list()]
         ),
         Button(
                     "ปิด",

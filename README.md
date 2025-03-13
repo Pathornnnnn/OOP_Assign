@@ -28,6 +28,7 @@ OR
 Dowload Zip file (branch master)
 
 1. Download and extract file
-2. Open folder Assignment by vscode
-3. check path by file in folder have app.py ? (use command : ls , dir) if have app.py is correct
-4. use command : python -m uvicorn app:app --reload
+2. Open vscode
+3. Open folder Assignment
+4. new terminal in vscode (path must is ..\OOP_Assign-master\OOP_Assign-master\Assignment> )
+5. use command : python -m uvicorn app:app --reload

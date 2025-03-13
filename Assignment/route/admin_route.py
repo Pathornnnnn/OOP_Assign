@@ -33,7 +33,7 @@ def post(order_id : int):
 @rt('/verify_order')
 def get():
     if not OrangeIT.verify_admin(config.account_now):
-        return Div(P("account Not Found", cls="error"))
+        return Style(error_css),Div(P("account Not Found", cls="error-message"),cls="error-box")
     else:
         orders = OrangeIT.get_pending_orders()  # ดึงคำสั่งซื้อที่รอการตรวจสอบ
         return Html(
@@ -87,7 +87,7 @@ def post(product_id: int):
 @rt('/manage_product')
 def get():
     if not OrangeIT.verify_admin(config.account_now):
-        return Div(P("Access Denied", cls="error"))
+        return Style(error_css),Div(P("Access Denied", cls="error-message"),cls="error-box")
     
     products = OrangeIT.get_product_lst()  # ดึงข้อมูลสินค้าทั้งหมด
     
@@ -135,11 +135,11 @@ def get():
 @rt('/edit_product/{product_id}')
 def post(product_id: int):
     if not OrangeIT.verify_admin(config.account_now):
-        return Div(P("คุณไม่มีสิทธิ์เข้าถึง", cls="error"))
+        return Style(error_css),Div(P("คุณไม่มีสิทธิ์เข้าถึง", cls="error-message"),cls="error-box")
 
     product = OrangeIT.search_product_by_id(product_id)
     if not product:
-        return Div(P("ไม่พบสินค้า", cls="error"))
+        return Style(error_css),Div(P("ไม่พบสินค้า", cls="error-message"),cls="error-box")
 
     return Html(
         Body(

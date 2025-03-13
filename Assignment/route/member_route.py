@@ -33,7 +33,7 @@ def get():
 @rt('/view_cart')
 def get():
     if not config.account_now:
-        return Div(P("account Not Found", cls="error"))
+        return Style(error_css),Div(P("account Not Found", cls="error-message"),cls="error-box")
     
     temp_acc = OrangeIT.search_acc_by_id(config.account_now)
     cart = temp_acc.get_cart_shopping()
@@ -72,7 +72,7 @@ def get():
 @rt('/update_cart/{product_id}/{action}')
 def post(product_id: int, action: str):
     if not config.account_now:
-        return Div(P("account Not Found", cls="error"))
+        return Style(error_css),Div(P("account Not Found", cls="error-message"),cls="error-box")
     
     if action == "increase":
         OrangeIT.update_cart_quantity(config.account_now, product_id, 1)
@@ -84,7 +84,7 @@ def post(product_id: int, action: str):
 @rt('/remove_cart/{product_id}')
 def post(product_id: int):
     if not config.account_now:
-        return Div(P("account Not Found", cls="error"))
+        return Style(error_css),Div(P("account Not Found", cls="error-message"),cls="error-box")
     
     OrangeIT.remove_cartitem_by_id(config.account_now, product_id)
 
@@ -93,7 +93,7 @@ def post(product_id: int):
 @rt('/checkout')
 def checkout():
     if not config.account_now:
-        return Div(P("Account Not Found", cls="error"))
+        return Style(error_css),Div(P("Account Not Found", cls="error-message"),cls="error-box")
 
     temp_acc = OrangeIT.search_acc_by_id(config.account_now)
     cartitems_lst = temp_acc.get_cart_shopping().get_cart_lst()
@@ -139,7 +139,7 @@ def apply_coupon(coupon: str):
     temp_acc = OrangeIT.search_acc_by_id(config.account_now)
     
     if not temp_acc:
-        return P("❌ Error: Account not found", cls="error")
+        return Style(error_css),P("❌ Error: Account not found", cls="error-message")
 
     total_price = temp_acc.get_cart_shopping().get_price_total()
     discount = OrangeIT.search_coupon_by_code(coupon)  # ตรวจสอบคูปอง
@@ -150,7 +150,7 @@ def apply_coupon(coupon: str):
         return P(f"🎉 คุณได้รับส่วนลด {discount} บาท Total: ฿{new_total:.2f}", cls="total-price")
     else:
         coupon_code = None
-        return P("❌ คูปองไม่ถูกต้อง", cls="error")
+        return P("❌ คูปองไม่ถูกต้อง", cls="error-message")
 
 
 #payment    
@@ -158,7 +158,7 @@ def apply_coupon(coupon: str):
 def post(full_name:str , address: str , city : str , postal_code: str , phone: str ):
     global order_id, discount, coupon_code
     if not config.account_now:
-        return Div(P("account Not Found", cls="error"))
+        return Div(P("account Not Found", cls="error-message"))
     acc = OrangeIT.search_acc_by_id(config.account_now)
     order_id = OrangeIT.create_order_acc(config.account_now, full_name, address, city, postal_code ,phone , discount, coupon_code)
     OrangeIT.clear_cart_account_by_id(config.account_now)
@@ -191,11 +191,11 @@ def post(card_number:str, expiry_date:str, cvc:str):
     global order_id
     card = OrangeIT.check_card(card_number, expiry_date, cvc)
     if not card:
-        return Div(P("❌ Card invalid", cls="error"))
+        return Style(error_css),Div(P("❌ Card invalid", cls="error-message"),cls="error-box")
     
     order_total = OrangeIT.get_order_total(order_id, config.account_now)  # ดึงยอดรวมของคำสั่งซื้อ
     if card.get_amount() < order_total:
-        return Div(P("❌ Insufficient funds. Please use another card.", cls="error"))  # เงินไม่พอ
+        return Style(error_css),Div(P("❌ Insufficient funds. Please use another card.", cls="error-message"),cls="error-box")  # เงินไม่พอ
 
     # สร้างอ็อบเจ็กต์สำหรับการชำระเงินด้วยบัตรเครดิต
     payment = CreditCardPayment(order_total, card.get_card_number(), "Customer")
@@ -206,13 +206,13 @@ def post(card_number:str, expiry_date:str, cvc:str):
         OrangeIT.clear_cart_account_by_id(config.account_now)  # ล้างตะกร้าสินค้า
         return Redirect('/')
 
-    return Div(P("❌ Payment failed. Please try again.", cls="error"))  # การชำระเงินล้มเหลว
+    return Style(error_css),Div(P("❌ Payment failed. Please try again.", cls="error-message"),cls="error-box")  # การชำระเงินล้มเหลว
 
 
 @rt('/view_myorder')
 def get():
     if not config.account_now:
-        return Div(P("Account Not Found", cls="error"))
+        return Style(error_css),Div(P("Account Not Found", cls="error-message"),cls="error-box")
     
     acc = OrangeIT.search_acc_by_id(config.account_now)
     orders = acc.get_myorder_lst()
@@ -283,10 +283,10 @@ def post(order:int):
 @rt('/order_details/{order_id}')
 def post(order_id: int):
     if not config.account_now:
-        return Div(P("Account Not Found", cls="error"))
+        return Style(error_css),Div(P("Account Not Found", cls="error-message"))
     order = OrangeIT.search_order_by_id(config.account_now , order_id)
     if not order:
-        return Div(P("Order not found", cls="error"))
+        return Style(error_css),Div(P("Order not found", cls="error-message"))
     
     return Div(
         H2(f"รายละเอียดคำสั่งซื้อ #{order.get_id()}", cls="order-detail-header"),

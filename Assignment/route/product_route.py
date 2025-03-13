@@ -5,7 +5,7 @@ import config
 def get(id: int):
     product = OrangeIT.search_product_by_id(id)
     if not product:
-        return Div(P("Product Not Found", cls="error"))
+        return Div(P("Product Not Found", cls="error-message"))
 
     reviews = OrangeIT.get_reviews_by_product_id(id)  # ดึงรีวิวของสินค้านี้
 
@@ -80,7 +80,7 @@ def get(id: int):
 def post(id: int, rating: int, review_text: str):
     user = OrangeIT.search_acc_by_id(config.account_now)
     if not user:
-        return P("กรุณาเข้าสู่ระบบก่อนรีวิว", cls="error")
+        return Style(error_css),P("กรุณาเข้าสู่ระบบก่อนรีวิว", cls="error-message")
 
     if not isinstance(user, Customer):
         return Style(error_css),Div(P("❌ เฉพาะลูกค้าเท่านั้นที่สามารถรีวิวได้", cls="error-message"),cls="error-box")
@@ -96,11 +96,11 @@ def post(id: int, rating: int, review_text: str):
 @rt('/purchase/{product_id}')
 def post(product_id : int):
     if not config.account_now:
-        return Div(P("account Not Found", cls="error"))
+        return Style(error_css),Div(P("account Not Found", cls="error-message"),cls="error-box")
     else:
         user = OrangeIT.search_acc_by_id(config.account_now)
         if not isinstance(user, Customer):
-            return Div(P("เฉพาะลูกค้าเท่านั้นที่สามารถสั่งซื้อได้", cls="error"))
+            return Style(error_css),Div(P("เฉพาะลูกค้าเท่านั้นที่สามารถสั่งซื้อได้", cls="error-message"),cls="error-box")
         OrangeIT.add_to_cart(product_id,1,config.account_now)
         temp_acc = OrangeIT.search_acc_by_id(config.account_now)
         return Redirect("/view_cart")
@@ -111,12 +111,12 @@ def post(product_id: int , quantity: int=1):
     try:
         quantity = int(quantity)
         if quantity <= 0:
-            return Div(P("❌ Invalid quantity!", cls="error"))
+            return Style(error_css),Div(P("❌ Invalid quantity!", cls="error-message"),cls="error-box")
     except ValueError:
-        return Div(P("❌ Invalid quantity format!", cls="error"))
+        return Style(error_css),Div(P("❌ Invalid quantity format!", cls="error-message"),cls="error-box")
 
     if not config.account_now:
-        return Div(P("account Not Found", cls="error"))
+        return Style(error_css),Div(P("account Not Found", cls="error-message"),cls="error-box")
     else:
         user = OrangeIT.search_acc_by_id(config.account_now)
         if not isinstance(user, Customer):

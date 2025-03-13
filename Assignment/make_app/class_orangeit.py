@@ -29,18 +29,15 @@ class Controller:
         product = self.search_product_by_id(product_id)
         stock_product = product.get_stock()
         acc = self.search_acc_by_id(acc_id)
-        print(product,stock_product,acc)
         if stock_product >= quantity:
             for i in acc.get_cart_shopping().get_cart_lst():
                 if product.get_name() == i.get_product().get_name():
                     i.add_quantity(quantity)
                     product.down_stock(quantity)
-                    print('add to cart exist item')
                     return True
             itemm = Cartitem(product,quantity)
             acc.Add_to_cart_shopping(itemm)
             product.down_stock(quantity)
-            print('add to cart new item')
             return True
 
         else:
@@ -56,29 +53,22 @@ class Controller:
     def search_acc_by_id(self,acc_id):
         for i in self.__acc_lst:
             if i.get_acc_id() == acc_id:
-                print('searh customer found')
                 return i
 
         for i in self.__admin_lst:
             if i.get_acc_id() == acc_id:
-                print('searh admin found')
                 return i
         
-        print('searh not found')
         return None
     
     def search_acc_by_email(self, email):
         for acc in self.__acc_lst:
             if acc.get_acc_email() == email:
-                print('searh customer found')
                 return acc
             
         for acc in self.__admin_lst:
             if acc.get_admin_email() == email:
-                print('searh admin found')
                 return acc
-
-        print('searh not found')
         return None
     
     def search_product_by_id(self, product_id):
@@ -150,7 +140,6 @@ class Controller:
         for review in self.__review_lst:
             if name_product == review.get_product_name():
                 review_lst.append(review)
-        print(review_lst)
         return review_lst      
     
     def update_cart_quantity(self , account , cartitem_id , quantity):
@@ -162,16 +151,13 @@ class Controller:
                 stock = i.get_product().get_stock()
                 if i.get_quantity() + quantity <= stock and i.get_quantity() + quantity > 0:
                     i.update_quantity(quantity)
-                    print('Update Pass')
                     return True
                 else:
-                    print('Can"t Update stock not enough')
                     return False
         return False
 
     def update_product(self,product_id, name, price, stock):
         try:
-            print(f'Update id {product_id}')
             product = self.search_product_by_id(product_id)
             product.update_product(name, price, stock)
         except:
@@ -186,7 +172,6 @@ class Controller:
         total = cart_price-discount
         my_order = Order(cart_lst , address , 'Wait For payment' ,total , coupon)
         acc.add_myorder(my_order)
-        print('add myorder success')
         return my_order.get_id()
     
     def change_status_order(self, account , order_id , message):
@@ -195,23 +180,15 @@ class Controller:
         for i in order_lst:
             if i.get_id() == order_id:
                 i.update_status(message)
-                print('Update status success')
                 return True
-            
-        print('can not update')
         return False
     
     def change_status_order_by_id(self, order_id , message):
-        print(order_id)
         order_lst = self.get_pending_orders()
-        print(order_lst)
         for i in order_lst:
             if i.get_id() == order_id:
                 i.update_status(message)
-                print('Update status success')
                 return True
-            
-        print('can not update')
         return False
     
     def clear_cart_account_by_id(self,account ):
@@ -221,7 +198,6 @@ class Controller:
         return True
     
     def delete_product_by_id(self, product_id):
-        print(f'delete product id : {product_id}')
         try:
             product = self.search_product_by_id(product_id)
             self.__product_lst.remove(product)
@@ -231,7 +207,6 @@ class Controller:
         
     def check_login(self, email, password):
         acc = self.search_acc_by_email(email)
-        print(acc)
         if isinstance(acc,Customer):
             if acc.get_acc_email() == email and acc.get_password() == password:
                 return acc
@@ -247,7 +222,6 @@ class Controller:
     
     def register(self, name , email , password , age):
         new_acc = Customer(name , email , password , age)
-        print(new_acc)
         try:
             self.add_acc_to_lst(new_acc)
             return True 
@@ -275,7 +249,6 @@ class Controller:
         acc = self.search_acc_by_id(account)
         cart = acc.get_cart_shopping()
         cart.remove_cartitem(cartitem_id)
-        print('Remove Success')
 
 class Account:
     id_acc = 1
@@ -424,7 +397,6 @@ class Cart:
     
     def clear_cart(self):
         self.__Cartitem_lst = []
-        print('clear cart success')
     
     def __str__(self):
         return f'{[[i.get_product().get_name(), i.get_quantity() ] for i in self.__Cartitem_lst]}'
@@ -457,7 +429,6 @@ class Cartitem:
     
     def update_quantity(self, n_quan):
         self.__quantity += n_quan
-        print('Update success')
     
 class Payment:
     def __init__(self,id_pay , amount):
@@ -570,7 +541,6 @@ class CreditCardPayment(Payment):
         self.card_holder = card_holder
     
     def process_payment(self):
-        print(f"Processing credit card payment of ${self.amount} for {self.card_holder}.")
         return True  # สมมุติว่าชำระเงินสำเร็จ
 
 class Card:

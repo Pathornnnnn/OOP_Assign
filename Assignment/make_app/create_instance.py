@@ -1,4 +1,5 @@
-from OrangeIT import *
+from .class_orangeit import *
+
 def create_instance():
     #init usr
 

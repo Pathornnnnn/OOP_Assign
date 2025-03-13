@@ -82,6 +82,9 @@ def post(id: int, rating: int, review_text: str):
     if not user:
         return P("กรุณาเข้าสู่ระบบก่อนรีวิว", cls="error")
 
+    if not isinstance(user, Customer):
+        return Style(error_css),Div(P("❌ เฉพาะลูกค้าเท่านั้นที่สามารถรีวิวได้", cls="error-message"),cls="error-box")
+    
     OrangeIT.add_review(config.account_now ,id , rating, review_text)  # บันทึกรีวิวลงระบบ
     return Div(
         P(f"{user.get_name()} ให้คะแนน: {'⭐' * rating}", cls="review-rating"),
@@ -95,6 +98,9 @@ def post(product_id : int):
     if not config.account_now:
         return Div(P("account Not Found", cls="error"))
     else:
+        user = OrangeIT.search_acc_by_id(config.account_now)
+        if not isinstance(user, Customer):
+            return Div(P("เฉพาะลูกค้าเท่านั้นที่สามารถสั่งซื้อได้", cls="error"))
         OrangeIT.add_to_cart(product_id,1,config.account_now)
         #print result
         temp_acc = OrangeIT.search_acc_by_id(config.account_now)
@@ -115,6 +121,9 @@ def post(product_id: int , quantity: int=1):
     if not config.account_now:
         return Div(P("account Not Found", cls="error"))
     else:
+        user = OrangeIT.search_acc_by_id(config.account_now)
+        if not isinstance(user, Customer):
+            return Style(error_css),Div(P("❌ เฉพาะลูกค้าเท่านั้นที่สามารถเพิ่มลงตะกร้าได้", cls="error-message"),cls="error-box")
         OrangeIT.add_to_cart(product_id,quantity,config.account_now)
         #print result
         temp_acc = OrangeIT.search_acc_by_id(config.account_now)

@@ -1683,3 +1683,24 @@ body {
 
 
 '''
+
+error_css = '''
+.error-box {
+        background-color: #ffe6e6;  /* สีแดงอ่อน */
+        border: 1px solid #ff4d4d;  /* เส้นขอบแดง */
+        border-radius: 10px;  /* ขอบมน */
+        padding: 15px;  /* ระยะห่างข้างใน */
+        text-align: center;
+        box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); /* เงา */
+        width: fit-content;
+        margin: 10px auto; /* จัดกึ่งกลาง */
+    }
+
+    .error-message {
+        color: #cc0000;  /* สีแดงเข้ม */
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+
+'''

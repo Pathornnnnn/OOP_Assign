@@ -21,4 +21,4 @@
 6. open to the folder Assignment
 
 7. run command :
-    python -m uvicorn main:app --reload
+    python -m uvicorn app:app --reload

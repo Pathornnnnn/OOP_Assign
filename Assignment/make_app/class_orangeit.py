@@ -120,7 +120,7 @@ class Controller:
         pending_lst = []
         for i in self.__acc_lst:
             for j in i.get_myorder_lst():
-                if j.get_status() == 'Wait Verify':
+                if j.get_status() == 'Wait For payment':
                     pending_lst.append(j)
 
         return pending_lst

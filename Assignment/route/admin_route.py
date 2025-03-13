@@ -36,6 +36,7 @@ def get():
         return Style(error_css),Div(P("account Not Found", cls="error-message"),cls="error-box")
     else:
         orders = OrangeIT.get_pending_orders()  # ดึงคำสั่งซื้อที่รอการตรวจสอบ
+        print(orders)
         return Html(
             Body(
                 Div(

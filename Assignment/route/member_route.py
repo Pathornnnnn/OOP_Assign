@@ -92,7 +92,6 @@ def post(product_id: int):
 
 @rt('/checkout')
 def checkout():
-    print(config.account_now)
     if not config.account_now:
         return Div(P("Account Not Found", cls="error"))
 
@@ -137,7 +136,6 @@ def checkout():
 @rt('/use_coupon/')
 def apply_coupon(coupon: str):
     global discount, coupon_code
-    print('Code :',coupon)
     temp_acc = OrangeIT.search_acc_by_id(config.account_now)
     
     if not temp_acc:
@@ -162,11 +160,7 @@ def post(full_name:str , address: str , city : str , postal_code: str , phone: s
     if not config.account_now:
         return Div(P("account Not Found", cls="error"))
     acc = OrangeIT.search_acc_by_id(config.account_now)
-    # for i in acc.get_myorder_lst():
-    #     print(i)
     order_id = OrangeIT.create_order_acc(config.account_now, full_name, address, city, postal_code ,phone , discount, coupon_code)
-    # for i in acc.get_myorder_lst():
-    #     print(i)
     OrangeIT.clear_cart_account_by_id(config.account_now)
     return Style(payment_css), Div(
         Div(A(H1("ORANGE", cls="header-title"), href='/'), cls="header-container"),
@@ -196,7 +190,6 @@ def post(full_name:str , address: str , city : str , postal_code: str , phone: s
 def post(card_number:str, expiry_date:str, cvc:str):
     global order_id
     card = OrangeIT.check_card(card_number, expiry_date, cvc)
-    print(card)
     if not card:
         return Div(P("❌ Card invalid", cls="error"))
     
@@ -209,7 +202,6 @@ def post(card_number:str, expiry_date:str, cvc:str):
 
     if payment.process_payment():
         OrangeIT.deduct_amount_card(card, order_total)  # หักเงินจากบัตร
-        print(f'✅ Payment successful! Order {order_id} updated to "Waiting for admin approval"')
         OrangeIT.change_status_order(config.account_now,order_id,'Wait for shipping')
         OrangeIT.clear_cart_account_by_id(config.account_now)  # ล้างตะกร้าสินค้า
         return Redirect('/')

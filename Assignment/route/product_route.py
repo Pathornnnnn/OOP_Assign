@@ -102,10 +102,7 @@ def post(product_id : int):
         if not isinstance(user, Customer):
             return Div(P("เฉพาะลูกค้าเท่านั้นที่สามารถสั่งซื้อได้", cls="error"))
         OrangeIT.add_to_cart(product_id,1,config.account_now)
-        #print result
         temp_acc = OrangeIT.search_acc_by_id(config.account_now)
-        print('ID :',temp_acc.get_id(),'| Name :',  temp_acc.get_name() ,'| Cart :', temp_acc.get_cart_shopping())
-
         return Redirect("/view_cart")
 
 #add_to_cart
@@ -125,8 +122,5 @@ def post(product_id: int , quantity: int=1):
         if not isinstance(user, Customer):
             return Style(error_css),Div(P("❌ เฉพาะลูกค้าเท่านั้นที่สามารถเพิ่มลงตะกร้าได้", cls="error-message"),cls="error-box")
         OrangeIT.add_to_cart(product_id,quantity,config.account_now)
-        #print result
         temp_acc = OrangeIT.search_acc_by_id(config.account_now)
-        print('ID :',temp_acc.get_id(),'| Name :',  temp_acc.get_name() ,'| Cart :', temp_acc.get_cart_shopping())
-
         return Redirect("/")

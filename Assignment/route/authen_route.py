@@ -29,9 +29,7 @@ def get():
 def post(email: str, password: str):
     acc = OrangeIT.check_login(email, password)
     if acc:
-        print(f"✅ Login Success: {acc}")
         config.account_now = acc.get_acc_id()
-        print(config.account_now)
         if not OrangeIT.verify_admin(config.account_now):
             return Redirect("/")  # กลับไปหน้าแรกถ้า Login สำเร็จ
         else:

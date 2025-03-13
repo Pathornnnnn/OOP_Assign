@@ -21,13 +21,11 @@ def get():
 
 @rt('/approve_order/{order}')
 def post(order : int):
-    print('apporve')
     OrangeIT.change_status_order_by_id(order, "Accept Order (wait for shipping)")
     return Redirect('/verify_order')
 
 @rt('/reject_order/{order_id}')
 def post(order_id : int):
-    print('reject')
     OrangeIT.change_status_order_by_id(order_id, "Reject Order")
     return Redirect('/verify_order')
 
@@ -35,7 +33,6 @@ def post(order_id : int):
 @rt('/verify_order')
 def get():
     if not OrangeIT.verify_admin(config.account_now):
-        print('you not admin bye')
         return Div(P("account Not Found", cls="error"))
     else:
         orders = OrangeIT.get_pending_orders()  # ดึงคำสั่งซื้อที่รอการตรวจสอบ
@@ -84,7 +81,6 @@ def get():
 
 @rt('/delete_product/{product_id}')
 def post(product_id: int):
-    print('delete product')
     OrangeIT.delete_product_by_id(product_id)
     return Redirect('/manage_product')
 
@@ -199,7 +195,6 @@ def get():
 
 @rt('/add_product')
 def post(name: str, price: str, description:str ,quantity:str ,img: UploadFile):
-    print('post')
     #try:
         # Ensure the directories exist
     if not os.path.exists(config.UPLOAD_DIR):

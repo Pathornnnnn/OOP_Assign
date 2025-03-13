@@ -69,7 +69,9 @@ def create_instance():
 
     card_lst = []
     card1 = Card('1111222233334444','12/25','333',50000)
+    card2 = Card('1111222233334444','12/25','444',500000)
     card_lst.append(card1)
+    card_lst.append(card2)
 
     #init System
     OrangeIT = Controller(user_lst,product_lst,admin_lst,coupon_lst,[],card_lst)
@@ -78,10 +80,8 @@ def create_instance():
     # OrangeIT.add_to_cart(1,2,1)
     # OrangeIT.add_to_cart(5,2,1)
     # เพิ่มสินค้า Monitor จำนวน 2 ชิ้น ลงตะกร้าของไอดี 1 (MAX)
-
-    acc = OrangeIT.search_acc_by_id(1)
-    
-    print('ID :',acc.get_acc_id(),'| Name :',  acc.get_name() ,'| Cart :', acc.get_cart_shopping())
+    # acc = OrangeIT.search_acc_by_id(1)
+    # print('ID :',acc.get_acc_id(),'| Name :',  acc.get_name() ,'| Cart :', acc.get_cart_shopping())
     # print('ID :',jj.get_acc_id(),'| Name :',  jj.get_name() ,'| Cart :', jj.get_cart_shopping())
 
     return OrangeIT

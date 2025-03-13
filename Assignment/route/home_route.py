@@ -131,7 +131,10 @@ def get(name: str):
             Img(src=product.get_img(), alt=product.get_name()),
             H3(product.get_name()),
             P(f"Price : {product.get_price()} THB"),
-            cls=("product-card")
+            Form(
+                Button('See Detail' ,type='submit',style= 'background-color:orange;'),
+                action= f'/p/{product.get_id()}',method = 'get',), 
+            cls="product-card",id = product.get_id(),
         ) for product in results])
     else:
         return Div(P("Products Not Found."))
